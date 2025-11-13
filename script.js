@@ -303,9 +303,16 @@ document.addEventListener('DOMContentLoaded', () => {
      * Popula os seletores de equipe no formulário de resultados.
      */
     const populateSelectors = () => {
+        // Pega os estilos computados para resolver as variáveis CSS, garantindo maior compatibilidade.
+        const computedStyle = getComputedStyle(document.documentElement);
+
         const teamOptions = TEAMS.map(team => {
+            // Resolve a variável CSS para obter o valor da cor real (ex: 'var(--cor-azul)' -> '#007bff')
+            const varName = team.color.replace('var(', '').replace(')', '');
+            const bgColor = computedStyle.getPropertyValue(varName).trim();
             const textColor = team.isLight ? '#000000' : '#FFFFFF';
-            return `<option value="${team.id}" style="background-color: ${team.color}; color: ${textColor}; font-weight: bold;">${team.name}</option>`;
+            
+            return `<option value="${team.id}" style="background-color: ${bgColor}; color: ${textColor}; font-weight: bold;">${team.name}</option>`;
         }).join('');
 
         const select1 = document.getElementById('team1');
@@ -325,9 +332,10 @@ document.addEventListener('DOMContentLoaded', () => {
             select2.value = TEAMS[1].id;
         }
         
-        // Garante que, após o reset do formulário, a seleção não seja de times iguais
+        // Garante que, mesmo após a restauração, a seleção não seja de times iguais
         if (select1.value === select2.value) {
-            select2.value = TEAMS.find(t => t.id !== select1.value).id;
+            // Se o time 1 for o primeiro da lista, seleciona o segundo para o select2. Senão, seleciona o primeiro.
+            select2.value = (select1.value === TEAMS[0].id) ? TEAMS[1].id : TEAMS[0].id;
         }
     };
 
