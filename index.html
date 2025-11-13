@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneio da Amizade - 2025</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="header-content">
+                <h1>TORNEIO DA AMIZADE – 2025</h1>
+                <p>Resultados em tempo real</p>
+            </div>
+            <button id="reset-button">Reiniciar Torneio</button>
+        </header>
+
+        <main>
+            <div class="column-left">
+                <section id="group-stage" class="card">
+                    <h2>FASE DE GRUPOS</h2>
+                    <div id="group-a">
+                        <h3>GRUPO A</h3>
+                        <table id="table-group-a">
+                            <thead>
+                                <tr>
+                                    <th>Pos</th>
+                                    <th>Equipe</th>
+                                    <th>P</th>
+                                    <th>V</th>
+                                    <th>D</th>
+                                    <th>PM</th>
+                                    <th>PS</th>
+                                    <th>Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Linhas do Grupo A serão inseridas pelo JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="group-b">
+                        <h3>GRUPO B</h3>
+                        <table id="table-group-b">
+                            <thead>
+                                <tr>
+                                    <th>Pos</th>
+                                    <th>Equipe</th>
+                                    <th>P</th>
+                                    <th>V</th>
+                                    <th>D</th>
+                                    <th>PM</th>
+                                    <th>PS</th>
+                                    <th>Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Linhas do Grupo B serão inseridas pelo JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="add-results" class="card">
+                    <h2>REGISTRAR JOGO</h2>
+                    <form id="result-form">
+                        <div class="match-input">
+                            <div class="team-select">
+                                <label for="team1">Equipe 1</label>
+                                <select id="team1" name="team1"></select>
+                                <input type="number" id="score1" name="score1" min="0" placeholder="0" required>
+                            </div>
+                            <span class="vs">vs</span>
+                            <div class="team-select">
+                                <input type="number" id="score2" name="score2" min="0" placeholder="0" required>
+                                <label for="team2">Equipe 2</label>
+                                <select id="team2" name="team2"></select>
+                            </div>
+                        </div>
+                        <button type="submit">Adicionar Resultado</button>
+                    </form>
+                    <div id="match-list">
+                        <h4>Jogos da Fase de Grupos</h4>
+                        <ul id="group-matches-list"></ul>
+                    </div>
+                </section>
+            </div>
+
+            <div class="column-right">
+                <section id="playoffs" class="card">
+                    <h2>FASE FINAL</h2>
+                    <div class="bracket">
+                        <div class="round quarters">
+                            <h4>Quartas de Final</h4>
+                            <div class="match" id="qf1"></div>
+                            <div class="match" id="qf2"></div>
+                            <div class="match" id="qf3"></div>
+                            <div class="match" id="qf4"></div>
+                        </div>
+                        <div class="round semis">
+                            <h4>Semifinais</h4>
+                            <div class="match" id="sf1"></div>
+                            <div class="match" id="sf2"></div>
+                        </div>
+                        <div class="round finals">
+                            <h4>Final</h4>
+                            <div class="match" id="final"></div>
+                            <h4>3º Lugar</h4>
+                            <div class="match" id="third-place"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
