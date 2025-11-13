@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'azul', name: 'Azul', group: 'A', color: 'var(--cor-azul)' },
         { id: 'vermelho', name: 'Vermelho', group: 'A', color: 'var(--cor-vermelho)' },
         { id: 'verde', name: 'Verde', group: 'A', color: 'var(--cor-verde)' },
-        { id: 'amarelo', name: 'Amarelo', group: 'A', color: 'var(--cor-amarelo)' },
+        { id: 'amarelo', name: 'Amarelo', group: 'A', color: 'var(--cor-amarelo)', isLight: true }, // Texto preto para legibilidade
         { id: 'roxo', name: 'Roxo', group: 'A', color: 'var(--cor-roxo)' },
         { id: 'laranja', name: 'Laranja', group: 'B', color: 'var(--cor-laranja)' },
         { id: 'rosa', name: 'Rosa', group: 'B', color: 'var(--cor-rosa)' },
@@ -303,10 +303,32 @@ document.addEventListener('DOMContentLoaded', () => {
      * Popula os seletores de equipe no formulário de resultados.
      */
     const populateSelectors = () => {
-        const teamOptions = TEAMS.map(team => `<option value="${team.id}">${team.name}</option>`).join('');
-        document.getElementById('team1').innerHTML = teamOptions;
-        document.getElementById('team2').innerHTML = teamOptions;
-        document.getElementById('team2').value = TEAMS[1].id; // Pre-seleciona para evitar auto-partida
+        const teamOptions = TEAMS.map(team => {
+            const textColor = team.isLight ? '#000000' : '#FFFFFF';
+            return `<option value="${team.id}" style="background-color: ${team.color}; color: ${textColor}; font-weight: bold;">${team.name}</option>`;
+        }).join('');
+
+        const select1 = document.getElementById('team1');
+        const select2 = document.getElementById('team2');
+        
+        const currentVal1 = select1.value;
+        const currentVal2 = select2.value;
+
+        select1.innerHTML = teamOptions;
+        select2.innerHTML = teamOptions;
+
+        // Restaura a seleção anterior ou define um padrão para evitar que a mesma equipe seja selecionada
+        select1.value = currentVal1 || TEAMS[0].id;
+        if (currentVal2 && currentVal1 !== currentVal2) {
+            select2.value = currentVal2;
+        } else {
+            select2.value = TEAMS[1].id;
+        }
+        
+        // Garante que, após o reset do formulário, a seleção não seja de times iguais
+        if (select1.value === select2.value) {
+            select2.value = TEAMS.find(t => t.id !== select1.value).id;
+        }
     };
 
     /**
