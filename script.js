@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateUIMode = () => {
-        document.getElementById('teams-management-fieldset').classList.toggle('hidden', state.teamsLocked);
+        document.querySelectorAll('.team-management-controls').forEach(el => el.classList.toggle('hidden', state.teamsLocked));
         document.getElementById('generate-games-container').classList.toggle('hidden', state.teamsLocked);
         document.getElementById('group-games-section').classList.toggle('hidden', !state.teamsLocked);
         document.getElementById('playoffs').classList.toggle('hidden', !state.playoffsGenerated);
