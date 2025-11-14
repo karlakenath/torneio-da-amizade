@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const getInitialState = () => ({
         teams: [],
         groupStageGames: [],
-        playoffMatches: { qf1: {}, qf2: {}, qf3: {}, qf4: {}, sf1: {}, sf2: {}, final: {}, thirdPlace: {} },
+        playoffMatches: { qf1: {}, qf2: {}, qf3: {}, qf4: {}, sf1: {}, sf2: {}, final: {}, 'third-place': {} },
         teamsLocked: false,
         playoffsGenerated: false,
     });
@@ -26,6 +26,34 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAndRender();
     };
 
+    const generateBalancedGroupGames = (teams, group) => {
+        const schedule = [];
+        let teamIds = teams.map(t => t.id);
+
+        if (teamIds.length < 2) return [];
+        if (teamIds.length % 2 !== 0) teamIds.push(null); // Add a dummy team for byes
+
+        const numTeams = teamIds.length;
+        const numRounds = numTeams - 1;
+        const half = numTeams / 2;
+
+        const teamRefs = [...teamIds];
+
+        for (let round = 0; round < numRounds; round++) {
+            for (let i = 0; i < half; i++) {
+                const team1 = teamRefs[i];
+                const team2 = teamRefs[numTeams - 1 - i];
+                if (team1 && team2) {
+                    schedule.push({ id: self.crypto.randomUUID(), t1: team1, t2: team2, s1: null, s2: null, group });
+                }
+            }
+            // Rotate teams, keeping the first one fixed
+            const lastTeam = teamRefs.pop();
+            teamRefs.splice(1, 0, lastTeam);
+        }
+        return schedule;
+    };
+
     const generateGroupStageGames = () => {
         if (state.teams.filter(t=>t.group === 'A').length < 2 || state.teams.filter(t=>t.group === 'B').length < 2) {
             alert("É necessário ter pelo menos 2 equipes em cada grupo para gerar os jogos."); return;
@@ -33,16 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm("Tem certeza? Os times serão bloqueados e os jogos da fase de grupos serão gerados.")) return;
 
         state.teamsLocked = true;
-        const games = [];
+        let allGames = [];
         ['A', 'B'].forEach(group => {
             const groupTeams = state.teams.filter(t => t.group === group);
-            for (let i = 0; i < groupTeams.length; i++) {
-                for (let j = i + 1; j < groupTeams.length; j++) {
-                    games.push({ id: self.crypto.randomUUID(), t1: groupTeams[i].id, t2: groupTeams[j].id, s1: null, s2: null, group });
-                }
-            }
+            const groupGames = generateBalancedGroupGames(groupTeams, group);
+            allGames = allGames.concat(groupGames);
         });
-        state.groupStageGames = games;
+        state.groupStageGames = allGames;
         saveAndRender();
     };
     
@@ -86,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (qf3.winner && qf4.winner && !sf2.teams) sf2.teams = [qf3.winner, qf4.winner];
             if (sf1.winner && sf2.winner && !state.playoffMatches.final.teams) {
                 state.playoffMatches.final.teams = [sf1.winner, sf2.winner];
-                state.playoffMatches.thirdPlace.teams = [sf1.teams.find(id => id !== sf1.winner), sf2.teams.find(id => id !== sf2.winner)];
+                state.playoffMatches['third-place'].teams = [sf1.teams.find(id => id !== sf1.winner), sf2.teams.find(id => id !== sf2.winner)];
             }
             return;
         }
@@ -97,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.playoffMatches = {
             qf1: { teams: [groupA[0].id, groupB[3].id] }, qf2: { teams: [groupA[1].id, groupB[2].id] },
             qf3: { teams: [groupB[0].id, groupA[3].id] }, qf4: { teams: [groupB[1].id, groupA[2].id] },
-            sf1: {}, sf2: {}, final: {}, thirdPlace: {}
+            sf1: {}, sf2: {}, final: {}, 'third-place': {}
         };
         state.playoffsGenerated = true;
     };
