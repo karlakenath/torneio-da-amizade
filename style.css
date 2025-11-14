@@ -7,18 +7,6 @@
     --accent-color: #00aaff;
     --win-color: #4caf50;
     --loss-color: #f44336;
-
-    /* Cores das Equipes */
-    --cor-azul: #007bff;
-    --cor-vermelho: #dc3545;
-    --cor-verde: #28a745;
-    --cor-amarelo: #ffc107;
-    --cor-roxo: #6f42c1;
-    --cor-laranja: #fd7e14;
-    --cor-rosa: #e83e8c;
-    --cor-preto: #343a40;
-    --cor-branco: #f8f9fa;
-    --cor-cinza: #6c757d;
 }
 
 body {
@@ -27,16 +15,15 @@ body {
     color: var(--text-color);
     margin: 0;
     padding: 20px;
-    display: flex;
-    justify-content: center;
 }
 
 #app {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3 {
     font-weight: 700;
     text-transform: uppercase;
 }
@@ -44,9 +31,23 @@ h1, h2, h3, h4 {
 .card {
     background-color: var(--card-bg);
     border-radius: 15px;
-    padding: 20px;
+    padding: 25px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     margin-bottom: 20px;
+}
+
+button {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
 }
 
 /* HEADER */
@@ -54,336 +55,104 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--card-bg);
     padding: 15px 30px;
-    border-radius: 15px;
     margin-bottom: 20px;
+    background-color: var(--card-bg);
+    border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
+header h1 { margin: 0; font-size: 2.5em; color: var(--accent-color); }
+header p { margin: 0; font-size: 1.2em; opacity: 0.8; }
+#reset-button { background-color: var(--loss-color); color: var(--text-color); padding: 10px 20px; }
+#reset-button:hover { background-color: #c33025; }
 
-header h1 {
-    margin: 0;
-    font-size: 2.5em;
-    color: var(--accent-color);
-}
+/* (A) SEÇÃO DE GRUPOS */
+#groups-section { display: flex; gap: 20px; }
+.group-container { flex: 1; }
+.group-container h3 { color: var(--accent-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
 
-header p {
-    margin: 0;
-    font-size: 1.2em;
-    opacity: 0.8;
-}
+.add-team-form { display: flex; gap: 10px; margin-bottom: 15px; }
+.add-team-form input[type="text"] { flex-grow: 1; background: var(--bg-color); border: 1px solid var(--border-color); color: white; padding: 8px; border-radius: 5px; }
+.add-team-form input[type="color"] { width: 40px; height: 40px; border: none; background: transparent; cursor: pointer; padding: 0; border-radius: 5px; }
+.add-team-form button { background-color: var(--accent-color); color: white; padding: 0 20px; }
 
-#reset-button {
-    background-color: var(--loss-color);
-    color: var(--text-color);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Oswald', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    transition: background-color 0.3s;
-}
+table { width: 100%; border-collapse: collapse; text-align: center; }
+th, td { padding: 10px; }
+thead { background-color: #253a51; }
+tbody tr { border-bottom: 1px solid var(--border-color); }
+tbody tr:last-child { border-bottom: none; }
+td:nth-child(2) { text-align: left; font-weight: 700; }
+.team-color-badge { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; vertical-align: middle; border: 1px solid rgba(255,255,255,0.5); }
 
-#reset-button:hover {
-    background-color: #c33025;
-}
+.finalize-groups-container { margin-bottom: 20px; }
+#finalize-groups-button { width: 100%; padding: 15px; font-size: 1.2em; background-color: var(--win-color); color: white; }
+#finalize-groups-button:disabled { background-color: #6c757d; cursor: not-allowed; }
 
-/* LAYOUT PRINCIPAL */
-main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
+/* (B) SEÇÃO DE REGISTRO DE JOGOS */
+#add-results h2 { margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+.match-input { display: flex; justify-content: space-between; align-items: center; }
+.team-select { display: flex; align-items: center; gap: 10px; flex: 1; }
+.team-select:last-child { justify-content: flex-end; }
+.vs { font-size: 1.5em; font-weight: 700; color: var(--accent-color); margin: 0 20px; }
+select, input[type="number"] { background-color: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 5px; padding: 8px; font-family: 'Oswald', sans-serif; }
+select { flex-grow: 1; }
+input[type="number"] { width: 60px; text-align: center; font-size: 1.2em; }
+#result-form button { background-color: var(--accent-color); color: var(--text-color); border: none; padding: 12px; font-size: 1.1em; margin-top: 20px; width: 100%; }
 
-.column-left, .column-right {
-    display: flex;
-    flex-direction: column;
-}
+/* (C) SEÇÃO DO CHAVEAMENTO FINAL */
+#playoffs h2 { margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+.bracket { display: flex; justify-content: space-between; }
+.round { flex: 1; display: flex; flex-direction: column; justify-content: space-around; }
+.round-title { text-align: center; font-size: 1.2em; margin-bottom: 30px; }
+.third-place-title { margin-top: 60px; }
 
-/* TABELAS DE GRUPO */
-#group-stage h2, #playoffs h2, #add-results h2 {
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 10px;
-    margin-top: 0;
-}
+.match-wrapper { display: flex; flex-direction: column; justify-content: center; position: relative; }
+#quarters .match-wrapper { margin-bottom: 45px; }
+#semis .match-wrapper { margin-bottom: 150px; }
 
-#group-stage h3 {
-    color: var(--accent-color);
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-}
-
-th, td {
-    padding: 10px;
-}
-
-thead {
-    background-color: #253a51;
-}
-
-tbody tr {
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.3s;
-}
-
-tbody tr:last-child {
-    border-bottom: none;
-}
-
-tbody tr.highlight-update {
-    animation: highlight 1.5s ease-out;
-}
-
-@keyframes highlight {
-    0% { background-color: var(--win-color); }
-    100% { background-color: transparent; }
-}
-
-td:nth-child(2) {
-    text-align: left;
-    font-weight: 700;
-}
-
-.team-color-badge {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 10px;
-    vertical-align: middle;
-}
-
-/* FORMULÁRIO DE RESULTADOS */
-#result-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.match-input {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.team-select {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.vs {
-    font-size: 1.5em;
-    font-weight: 700;
-    color: var(--accent-color);
-}
-
-select, input[type="number"] {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    padding: 8px;
-    font-family: 'Oswald', sans-serif;
-}
-
-input[type="number"] {
-    width: 60px;
-    text-align: center;
-    font-size: 1.2em;
-}
-
-#result-form button {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Oswald', sans-serif;
-    font-weight: 700;
-    font-size: 1.1em;
-    text-transform: uppercase;
-    transition: background-color 0.3s;
-}
-
-#result-form button:hover {
-    background-color: #0088cc;
-}
-
-#match-list {
-    margin-top: 20px;
-}
-
-#match-list h4 {
-    margin-bottom: 10px;
-}
-
-#group-matches-list {
-    list-style: none;
-    padding: 0;
-    max-height: 150px;
-    overflow-y: auto;
-}
-
-#group-matches-list li {
-    background-color: #253a51;
-    padding: 8px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    font-size: 0.9em;
-}
-
-/* CHAVEAMENTO (BRACKET) */
-.bracket {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-}
-
-.round {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 30%;
-}
-
-.round h4 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.match {
-    background-color: #253a51;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 40px; /* Espaço para conectores */
-    position: relative;
-    min-height: 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.finals .match {
-    margin-bottom: 20px;
-}
-
-.match-team {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
-}
-
-.team-name {
-    display: flex;
-    align-items: center;
-}
-
-.team-score {
-    font-weight: 700;
-}
-
-.winner .team-name, .winner .team-score {
-    font-weight: 700;
-    color: var(--win-color);
-}
-
-.loser .team-name, .loser .team-score {
-    opacity: 0.6;
-}
-
-.placeholder {
-    color: #aaa;
-    font-style: italic;
-    text-align: center;
-    padding: 10px 0;
-}
+.match { background-color: #253a51; border-radius: 8px; padding: 10px; min-height: 60px; display: flex; flex-direction: column; justify-content: center; }
+.match-team { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
+.team-name { display: flex; align-items: center; }
+.team-score { font-weight: 700; }
+.winner .team-name, .winner .team-score { font-weight: 700; color: var(--win-color); }
+.loser { opacity: 0.6; }
+.placeholder { color: #aaa; font-style: italic; text-align: center; padding: 20px 0; }
 
 /* Conectores do Chaveamento */
-.match::after {
-    content: '';
-    position: absolute;
-    right: -20px; /* Metade do gap */
-    top: 50%;
-    width: 20px;
-    height: 2px;
-    background-color: var(--border-color);
+.connector { position: absolute; background-color: var(--border-color); }
+#qf1 + .connector, #qf3 + .connector {
+    width: 2px; height: 75px; /* Vertical */
+    top: 35px; right: -30px;
+}
+#qf1 + .connector::after, #qf3 + .connector::after {
+    content: ''; position: absolute; background-color: var(--border-color);
+    width: 30px; height: 2px; /* Horizontal */
+    left: 0; bottom: 0;
+}
+#qf2 + .connector, #qf4 + .connector { display: none; } /* Sem conector */
+
+#sf1 + .connector, #sf2 + .connector {
+    width: 2px; height: 160px; /* Vertical */
+    top: 35px; right: -30px;
+}
+#sf1 + .connector::after, #sf2 + .connector::after {
+    content: ''; position: absolute; background-color: var(--border-color);
+    width: 30px; height: 2px; /* Horizontal */
+    left: 0; top: 50%;
 }
 
-.round.finals .match::after {
-    display: none; /* Sem conectores saindo da final */
-}
-
-.match:nth-child(odd)::before {
-    content: '';
-    position: absolute;
-    right: -20px;
-    top: 50%;
-    height: calc(50% + 40px / 2); /* Metade do match + metade do gap */
-    width: 2px;
-    background-color: var(--border-color);
-}
-
-.match:nth-child(even)::before {
-    content: '';
-    position: absolute;
-    right: -20px;
-    bottom: 50%;
-    height: calc(50% + 40px / 2); /* Metade do match + metade do gap */
-    width: 2px;
-    background-color: var(--border-color);
-}
-
-/* Ajustes específicos para o chaveamento */
-#qf1::before, #qf3::before { height: calc(50% + 70px); }
-#qf2::before, #qf4::before { height: calc(50% + 70px); }
-.semis .match { margin-bottom: 140px; }
-.semis .match::before { height: calc(50% + 140px / 2); }
+/* Ajustes de alinhamento */
+#semis { margin: 0 60px; }
+#final-round { margin-left: 60px; }
 
 /* Responsividade */
-@media (max-width: 1200px) {
-    main {
-        grid-template-columns: 1fr;
-    }
-    .column-right {
-        margin-top: 20px;
-    }
+@media (max-width: 900px) {
+    #groups-section { flex-direction: column; }
+    .bracket { flex-direction: column; }
+    .round { margin: 0 0 40px 0 !important; }
+    .connector, .connector::after { display: none; } /* Simplifica em telas pequenas */
 }
-
 @media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-    header {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
-    header h1 {
-        font-size: 2em;
-    }
-    .match-input {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .bracket {
-        flex-direction: column;
-    }
-    .round {
-        width: 100%;
-        margin-bottom: 30px;
-    }
-    .match::after, .match::before {
-        display: none; /* Simplificar conectores em telas pequenas */
-    }
+    header { flex-direction: column; gap: 15px; text-align: center; }
+    .match-input { flex-direction: column; gap: 15px; }
 }
