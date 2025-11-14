@@ -56,25 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const generateGroupStageGames = () => {
-        try {
-            if (state.teams.filter(t => t.group === 'A').length < 2 || state.teams.filter(t => t.group === 'B').length < 2) {
-                showToast("Cada grupo precisa de pelo menos 2 equipes.", "error");
-                return;
-            }
-
-            if (!confirm("Tem certeza? Os times serão bloqueados e os jogos da fase de grupos serão gerados.")) return;
-
-            state.teamsLocked = true;
-            const gamesA = createBalancedSchedule(state.teams.filter(t => t.group === 'A')).map(g => ({ ...g, id: self.crypto.randomUUID(), group: 'A', s1: null, s2: null }));
-            const gamesB = createBalancedSchedule(state.teams.filter(t => t.group === 'B')).map(g => ({ ...g, id: self.crypto.randomUUID(), group: 'B', s1: null, s2: null }));
-            state.groupStageGames = [...gamesA, ...gamesB];
-            
-            showToast("Tabela de jogos gerada com sucesso!", "success");
-            saveAndRender();
-        } catch (error) {
-            console.error("Erro ao gerar jogos:", error);
-            showToast("Ocorreu um erro inesperado ao gerar os jogos.", "error");
+        if (state.teams.filter(t=>t.group === 'A').length < 2 || state.teams.filter(t=>t.group === 'B').length < 2) {
+            alert("É necessário ter pelo menos 2 equipes em cada grupo para gerar os jogos."); return;
         }
+        if (!confirm("Tem certeza? Os times serão bloqueados e os jogos da fase de grupos serão gerados.")) return;
+
+        state.teamsLocked = true;
+        const gamesA = createBalancedSchedule(state.teams.filter(t => t.group === 'A')).map(g => ({ ...g, id: self.crypto.randomUUID(), group: 'A', s1: null, s2: null }));
+        const gamesB = createBalancedSchedule(state.teams.filter(t => t.group === 'B')).map(g => ({ ...g, id: self.crypto.randomUUID(), group: 'B', s1: null, s2: null }));
+        state.groupStageGames = [...gamesA, ...gamesB];
+        saveAndRender();
     };
     
     const addMatchResult = (gameId, s1, s2) => {
@@ -133,17 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
         state.playoffsGenerated = true;
     };
     const sortTeams = (a, b) => b.v - a.v || (b.saldo - a.saldo) || (b.pm - a.pm) || (a.ps - b.ps) || 0;
-
-    // --- FUNÇÕES DE FEEDBACK VISUAL ---
-    const showToast = (message, type = 'success') => {
-        const toastContainer = document.getElementById('toast-container');
-        if (!toastContainer) return;
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.textContent = message;
-        toastContainer.appendChild(toast);
-        setTimeout(() => toast.remove(), 4000);
-    };
 
     // --- FUNÇÕES DE RENDERIZAÇÃO ---
     const render = () => {
@@ -228,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const gameId = form.dataset.gameId;
             const s1 = parseInt(form.s1.value);
             const s2 = parseInt(form.s2.value);
-            if (isNaN(s1) || isNaN(s2)) { showToast("Placar inválido.", "error"); return; }
+            if (isNaN(s1) || isNaN(s2)) { alert("Placar inválido."); return; }
             addMatchResult(gameId, s1, s2);
         } else if (e.target.classList.contains('add-team-form')) {
             e.preventDefault();
@@ -243,8 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.getElementById('generate-games-button').addEventListener('click', generateGroupStageGames);
-    document.getElementById('reset-button').addEventListener('click', () => { if (confirm("Tem certeza? TODO o progresso será perdido.")) { localStorage.removeItem('tournamentState_v4'); state = getInitialState(); saveAndRender(); } });
+    document.getElementById('generate-games-button').onclick = generateGroupStageGames;
+    document.getElementById('reset-button').onclick = () => { if (confirm("Tem certeza? TODO o progresso será perdido.")) { localStorage.removeItem('tournamentState_v4'); state = getInitialState(); saveAndRender(); } };
 
     // --- INICIALIZAÇÃO ---
     render();
