@@ -17,7 +17,6 @@ h1, h2, h3 { font-weight: 700; text-transform: uppercase; }
 button { font-family: 'Oswald', sans-serif; font-weight: 700; text-transform: uppercase; cursor: pointer; border-radius: 8px; border: none; transition: all 0.2s; }
 button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
 fieldset { border: none; padding: 0; margin: 0; }
-fieldset:disabled { opacity: 0.6; pointer-events: none; }
 .hidden { display: none !important; }
 
 /* HEADER */
@@ -41,7 +40,13 @@ header p { margin: 0; font-size: 1.2em; opacity: 0.8; }
 .add-team-form input[type="color"] { width: 40px; height: 40px; border: none; background: transparent; cursor: pointer; padding: 0; border-radius: 5px; }
 .add-team-form button { background-color: var(--accent-color); color: white; padding: 0 20px; }
 
-table { width: 100%; border-collapse: collapse; text-align: center; }
+/* Esconde apenas os controles de edição quando os times estão bloqueados */
+#teams-management-fieldset.editing-locked .team-management-list,
+#teams-management-fieldset.editing-locked .add-team-form {
+    display: none;
+}
+
+table { width: 100%; border-collapse: collapse; text-align: center; margin-top: 15px; }
 thead { background-color: #253a51; }
 tbody tr { border-bottom: 1px solid var(--border-color); }
 td:nth-child(2) { text-align: left; font-weight: 700; }

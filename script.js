@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
         teamsLocked: false,
         playoffsGenerated: false,
     });
-    let state = JSON.parse(localStorage.getItem('tournamentState_v3')) || getInitialState();
+    let state = JSON.parse(localStorage.getItem('tournamentState_v4')) || getInitialState();
 
     // --- FUNÇÕES DE LÓGICA PRINCIPAL ---
-    const saveState = () => localStorage.setItem('tournamentState_v3', JSON.stringify(state));
+    const saveState = () => localStorage.setItem('tournamentState_v4', JSON.stringify(state));
     const saveAndRender = () => { saveState(); render(); };
 
     const addTeam = (name, color, group) => {
@@ -26,6 +26,35 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAndRender();
     };
 
+    const createBalancedSchedule = (teams) => {
+        if (teams.length < 2) return [];
+        const allPairs = [];
+        for (let i = 0; i < teams.length; i++) {
+            for (let j = i + 1; j < teams.length; j++) {
+                allPairs.push([teams[i], teams[j]]);
+            }
+        }
+        
+        let availableGames = [...allPairs];
+        const scheduledGames = [];
+        if (availableGames.length === 0) return [];
+
+        let lastGameTeams = [null, null];
+        while(availableGames.length > 0) {
+            let nextGameIndex = availableGames.findIndex(game => 
+                game[0].id !== lastGameTeams[0].id && game[0].id !== lastGameTeams[1].id &&
+                game[1].id !== lastGameTeams[0].id && game[1].id !== lastGameTeams[1].id
+            );
+
+            if (nextGameIndex === -1) nextGameIndex = 0;
+            
+            const nextGame = availableGames.splice(nextGameIndex, 1)[0];
+            scheduledGames.push(nextGame);
+            lastGameTeams = nextGame;
+        }
+        return scheduledGames.map(pair => ({ t1: pair[0].id, t2: pair[1].id }));
+    };
+
     const generateGroupStageGames = () => {
         if (state.teams.filter(t=>t.group === 'A').length < 2 || state.teams.filter(t=>t.group === 'B').length < 2) {
             alert("É necessário ter pelo menos 2 equipes em cada grupo para gerar os jogos."); return;
@@ -33,16 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm("Tem certeza? Os times serão bloqueados e os jogos da fase de grupos serão gerados.")) return;
 
         state.teamsLocked = true;
-        const games = [];
-        ['A', 'B'].forEach(group => {
-            const groupTeams = state.teams.filter(t => t.group === group);
-            for (let i = 0; i < groupTeams.length; i++) {
-                for (let j = i + 1; j < groupTeams.length; j++) {
-                    games.push({ id: self.crypto.randomUUID(), t1: groupTeams[i].id, t2: groupTeams[j].id, s1: null, s2: null, group });
-                }
-            }
-        });
-        state.groupStageGames = games;
+        const gamesA = createBalancedSchedule(state.teams.filter(t => t.group === 'A')).map(g => ({ ...g, id: self.crypto.randomUUID(), group: 'A', s1: null, s2: null }));
+        const gamesB = createBalancedSchedule(state.teams.filter(t => t.group === 'B')).map(g => ({ ...g, id: self.crypto.randomUUID(), group: 'B', s1: null, s2: null }));
+        state.groupStageGames = [...gamesA, ...gamesB];
         saveAndRender();
     };
     
@@ -169,7 +191,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateUIMode = () => {
-        document.getElementById('teams-management-fieldset').classList.toggle('hidden', state.teamsLocked);
+        const fieldset = document.getElementById('teams-management-fieldset');
+        fieldset.classList.toggle('editing-locked', state.teamsLocked);
+        fieldset.disabled = state.teamsLocked; // Continua desabilitando para travar inputs que não são escondidos
+        
         document.getElementById('generate-games-container').classList.toggle('hidden', state.teamsLocked);
         document.getElementById('group-games-section').classList.toggle('hidden', !state.teamsLocked);
         document.getElementById('playoffs').classList.toggle('hidden', !state.playoffsGenerated);
@@ -199,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('generate-games-button').onclick = generateGroupStageGames;
-    document.getElementById('reset-button').onclick = () => { if (confirm("Tem certeza? TODO o progresso será perdido.")) { localStorage.removeItem('tournamentState_v3'); state = getInitialState(); saveAndRender(); } };
+    document.getElementById('reset-button').onclick = () => { if (confirm("Tem certeza? TODO o progresso será perdido.")) { localStorage.removeItem('tournamentState_v4'); state = getInitialState(); saveAndRender(); } };
 
     // --- INICIALIZAÇÃO ---
     render();
