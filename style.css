@@ -27,7 +27,7 @@ header p { margin: 0; font-size: 1.2em; opacity: 0.8; }
 #reset-button { background-color: var(--loss-color); color: var(--text-color); padding: 10px 20px; }
 
 /* A) GERENCIAMENTO DE GRUPOS */
-#groups-section { display: flex; gap: 20px; }
+#groups-section { display: flex; gap: 20px; transition: all 0.5s ease; }
 .group-container { flex: 1; }
 .group-container h3 { color: var(--accent-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
 
@@ -51,49 +51,42 @@ td:nth-child(2) { text-align: left; font-weight: 700; }
 .finalize-groups-container { margin-bottom: 20px; }
 #generate-games-button { width: 100%; padding: 15px; font-size: 1.2em; background-color: var(--win-color); color: white; }
 
-/* C) REGISTRAR JOGO */
-#add-results h2 { margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
-.match-input { display: flex; justify-content: space-between; align-items: center; }
-.team-select { display: flex; align-items: center; gap: 10px; flex: 1; }
-.team-select:last-child { justify-content: flex-end; }
-.vs { font-size: 1.5em; font-weight: 700; color: var(--accent-color); margin: 0 20px; }
-select, input[type="number"] { background-color: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 5px; padding: 8px; font-family: 'Oswald', sans-serif; }
-select { flex-grow: 1; }
-input[type="number"] { width: 60px; text-align: center; font-size: 1.2em; }
-#result-form button { background-color: var(--accent-color); color: var(--text-color); padding: 12px; font-size: 1.1em; margin-top: 20px; width: 100%; }
-
 /* D) JOGOS DA FASE DE GRUPOS */
 #group-games-section h2 { margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
 .group-games-display { display: flex; gap: 20px; }
 .group-games-display > div { flex: 1; }
 .group-games-display h3 { color: var(--accent-color); }
 .group-games-display ul { list-style: none; padding: 0; }
-.group-games-display li { background-color: var(--card-bg-darker); padding: 10px 15px; border-radius: 5px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 1.1em; }
-.game-status-pending { font-style: italic; opacity: 0.7; }
-.game-score { font-weight: 700; }
+.group-games-display li, .match-wrapper { background-color: var(--card-bg-darker); padding: 10px 15px; border-radius: 5px; margin-bottom: 8px; }
+
+.inline-result-form { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
+.inline-result-form .teams { flex-grow: 1; font-size: 1.1em; }
+.inline-result-form input { width: 45px; text-align: center; background-color: var(--bg-color); border: 1px solid var(--border-color); color: white; padding: 5px; border-radius: 4px; }
+.inline-result-form button { background-color: var(--win-color); color: white; width: 32px; height: 32px; font-size: 1.2em; line-height: 1; padding: 0; }
+.final-score { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.final-score .teams { flex-grow: 1; font-size: 1.1em; }
+.final-score .score { font-weight: 700; font-size: 1.2em; }
 
 /* E, F, G) CHAVEAMENTO */
 #playoffs h2 { margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
 .bracket { display: flex; justify-content: space-between; }
-.round { flex: 1; display: flex; flex-direction: column; justify-content: space-around; }
-.round-title { text-align: center; font-size: 1.2em; margin-bottom: 30px; }
-.third-place-title { margin-top: 60px; }
-.match-wrapper { position: relative; }
-#quarters .match-wrapper { margin-bottom: 45px; }
-#semis .match-wrapper { margin-bottom: 150px; }
-.match { background-color: #253a51; border-radius: 8px; padding: 10px; min-height: 60px; display: flex; flex-direction: column; justify-content: center; }
-.match-team { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
-.winner .match-team { font-weight: 700; color: var(--win-color); }
-.loser .match-team { opacity: 0.6; }
-.placeholder { color: #aaa; font-style: italic; text-align: center; padding: 20px 0; }
-#semis { margin: 0 60px; }
-#final-round { margin-left: 60px; }
+.round { flex: 1; display: flex; flex-direction: column; }
+.round-title { text-align: center; font-size: 1.2em; margin-bottom: 20px; }
+.third-place-title { margin-top: 40px; }
+.match-wrapper { min-height: 60px; display: flex; align-items: center; }
+#quarters .match-wrapper { margin-bottom: 20px; }
+#semis { margin: 0 40px; justify-content: space-around; }
+#semis .match-wrapper { margin: 60px 0; }
+#final-round { justify-content: space-around; }
+#final-round .match-wrapper { margin: 160px 0; }
+#final-round #third-place-wrapper { margin-top: -100px; }
 
 /* Responsividade */
 @media (max-width: 900px) {
     #groups-section, .group-games-display, .bracket { flex-direction: column; }
+    #semis, #final-round { margin: 0; }
+    #semis .match-wrapper, #final-round .match-wrapper, #final-round #third-place-wrapper { margin: 10px 0; }
 }
 @media (max-width: 768px) {
     header { flex-direction: column; gap: 15px; text-align: center; }
-    .match-input { flex-direction: column; gap: 15px; }
 }

@@ -8,10 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
         teamsLocked: false,
         playoffsGenerated: false,
     });
-    let state = JSON.parse(localStorage.getItem('tournamentState_v2')) || getInitialState();
+    let state = JSON.parse(localStorage.getItem('tournamentState_v3')) || getInitialState();
 
     // --- FUNÇÕES DE LÓGICA PRINCIPAL ---
-    const saveState = () => localStorage.setItem('tournamentState_v2', JSON.stringify(state));
+    const saveState = () => localStorage.setItem('tournamentState_v3', JSON.stringify(state));
+    const saveAndRender = () => { saveState(); render(); };
 
     const addTeam = (name, color, group) => {
         if (!name.trim()) { alert("O nome da equipe não pode ser vazio."); return; }
@@ -45,22 +46,22 @@ document.addEventListener('DOMContentLoaded', () => {
         saveAndRender();
     };
     
-    const addMatchResult = (t1Id, s1, t2Id, s2) => {
-        const game = state.groupStageGames.find(g => (g.t1 === t1Id && g.t2 === t2Id) || (g.t1 === t2Id && g.t2 === t1Id));
-        if (game && game.s1 === null) {
-            game.s1 = (game.t1 === t1Id) ? s1 : s2;
-            game.s2 = (game.t2 === t2Id) ? s2 : s1;
-        } else if (state.playoffsGenerated) {
-            const matchId = Object.keys(state.playoffMatches).find(id => state.playoffMatches[id].teams?.includes(t1Id) && state.playoffMatches[id].teams?.includes(t2Id));
+    const addMatchResult = (gameId, s1, s2) => {
+        const game = state.groupStageGames.find(g => g.id === gameId);
+        if (game) {
+            game.s1 = s1; game.s2 = s2;
+        } else {
+            const matchId = Object.keys(state.playoffMatches).find(id => id === gameId);
             if (matchId) {
                 const match = state.playoffMatches[matchId];
-                match.scores = (match.teams[0] === t1Id) ? [s1, s2] : [s2, s1];
+                match.scores = [s1, s2];
+                const [t1Id, t2Id] = match.teams;
                 match.winner = s1 > s2 ? t1Id : t2Id;
                 generatePlayoffs(); // Re-check for next stage
             }
         }
         recalculateTeamStats();
-        if (state.groupStageGames.every(g => g.s1 !== null)) generatePlayoffs();
+        if (state.groupStageGames.every(g => g.s1 !== null) && !state.playoffsGenerated) generatePlayoffs();
         saveAndRender();
     };
 
@@ -89,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return;
         }
-        // First time generation
         const groupA = state.teams.filter(t => t.group === 'A').sort(sortTeams);
         const groupB = state.teams.filter(t => t.group === 'B').sort(sortTeams);
         if (groupA.length < 4 || groupB.length < 4) { alert("São necessárias 4 equipes em cada grupo que tenham jogado para gerar a fase final."); return; }
@@ -104,13 +104,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const sortTeams = (a, b) => b.v - a.v || (b.saldo - a.saldo) || (b.pm - a.pm) || (a.ps - b.ps) || 0;
 
     // --- FUNÇÕES DE RENDERIZAÇÃO ---
-    const saveAndRender = () => { saveState(); render(); };
     const render = () => {
         renderTeamManagement();
         renderTables();
         renderGroupStageGames();
         renderBracket();
-        populateSelectors();
         updateUIMode();
     };
 
@@ -123,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="delete-team-btn" data-team-id="${t.id}">X</button>
                 </li>`).join('');
         });
-        document.querySelectorAll('.delete-team-btn').forEach(btn => btn.onclick = () => deleteTeam(btn.dataset.teamId));
     };
 
     const renderTables = () => {
@@ -137,51 +134,72 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderGroupStageGames = () => {
         ['A', 'B'].forEach(group => {
             const list = document.querySelector(`#group-${group.toLowerCase()}-games ul`);
-            list.innerHTML = state.groupStageGames.filter(g => g.group === group).map(g => {
-                const t1 = state.teams.find(t => t.id === g.t1);
-                const t2 = state.teams.find(t => t.id === g.t2);
-                const score = g.s1 !== null ? `<span class="game-score">${g.s1} - ${g.s2}</span>` : `<span class="game-status-pending">Aguardando</span>`;
-                return `<li><span><span class="team-color-badge" style="background-color:${t1.color};"></span>${t1.name} vs <span class="team-color-badge" style="background-color:${t2.color};"></span>${t2.name}</span> ${score}</li>`;
-            }).join('');
+            list.innerHTML = state.groupStageGames.filter(g => g.group === group).map(g => `<li>${renderGame(g)}</li>`).join('');
         });
     };
 
     const renderBracket = () => {
         Object.keys(state.playoffMatches).forEach(id => {
-            const matchEl = document.getElementById(id);
-            if (!matchEl) return;
+            const wrapper = document.getElementById(`${id}-wrapper`);
+            if (!wrapper) return;
             const matchData = state.playoffMatches[id] || {};
-            const [t1Id, t2Id] = matchData.teams || [null, null];
-            const [s1, s2] = matchData.scores || [null, null];
-            if (!t1Id) { matchEl.innerHTML = `<div class="placeholder">${id.toUpperCase()}</div>`; return; }
-            const t1 = state.teams.find(t => t.id === t1Id);
-            const t2 = state.teams.find(t => t.id === t2Id);
-            const winnerId = matchData.winner;
-            const getTeamHTML = (team, score, isWinner) => `<div class="match-team ${isWinner ? 'winner' : ''}"><span class="team-name"><span class="team-color-badge" style="background-color:${team.color};"></span>${team.name}</span><span class="team-score">${score ?? ''}</span></div>`;
-            matchEl.innerHTML = getTeamHTML(t1, s1, t1.id === winnerId) + getTeamHTML(t2, s2, t2.id === winnerId);
+            if (!matchData.teams) { wrapper.innerHTML = `<div class="match placeholder">${id.toUpperCase()}</div>`; return; }
+            wrapper.innerHTML = renderGame({ id, ...matchData });
         });
     };
 
-    const populateSelectors = () => {
-        const options = state.teams.map(t => `<option value="${t.id}" style="background-color:${t.color}; color:${isColorLight(t.color) ? '#000' : '#FFF'};">${t.name}</option>`).join('');
-        document.getElementById('team1').innerHTML = options;
-        document.getElementById('team2').innerHTML = options;
+    const renderGame = (game) => {
+        const t1 = state.teams.find(t => t.id === (game.t1 || game.teams[0]));
+        const t2 = state.teams.find(t => t.id === (game.t2 || game.teams[1]));
+        const s1 = game.s1 ?? game.scores?.[0];
+        const s2 = game.s2 ?? game.scores?.[1];
+
+        const teamsHTML = `<span class="teams"><span class="team-color-badge" style="background-color:${t1.color};"></span>${t1.name} vs <span class="team-color-badge" style="background-color:${t2.color};"></span>${t2.name}</span>`;
+
+        if (s1 !== null && s1 !== undefined) {
+            return `<div class="final-score">${teamsHTML} <span class="score">${s1} - ${s2}</span></div>`;
+        } else {
+            return `<form class="inline-result-form" data-game-id="${game.id}">
+                        ${teamsHTML}
+                        <input type="number" name="s1" placeholder="0" required min="0">
+                        <input type="number" name="s2" placeholder="0" required min="0">
+                        <button type="submit">✔️</button>
+                    </form>`;
+        }
     };
-    const isColorLight = (c) => { try { const rgb = parseInt(c.substring(1), 16); return ((rgb >> 16) * 299 + ((rgb >> 8) & 0xff) * 587 + (rgb & 0xff) * 114) / 1000 > 150; } catch (e) { return false; } };
 
     const updateUIMode = () => {
-        document.getElementById('teams-management-fieldset').disabled = state.teamsLocked;
-        document.getElementById('result-form-fieldset').disabled = !state.teamsLocked;
-        document.getElementById('generate-games-container').style.display = state.teamsLocked ? 'none' : 'block';
+        document.getElementById('teams-management-fieldset').classList.toggle('hidden', state.teamsLocked);
+        document.getElementById('generate-games-container').classList.toggle('hidden', state.teamsLocked);
         document.getElementById('group-games-section').classList.toggle('hidden', !state.teamsLocked);
         document.getElementById('playoffs').classList.toggle('hidden', !state.playoffsGenerated);
     };
 
     // --- EVENT LISTENERS ---
-    document.querySelectorAll('.add-team-form').forEach(form => form.onsubmit = (e) => { e.preventDefault(); addTeam(e.target.elements[0].value, e.target.elements[1].value, e.target.dataset.group); e.target.reset(); });
+    document.getElementById('main-content').addEventListener('submit', (e) => {
+        if (e.target.classList.contains('inline-result-form')) {
+            e.preventDefault();
+            const form = e.target;
+            const gameId = form.dataset.gameId;
+            const s1 = parseInt(form.s1.value);
+            const s2 = parseInt(form.s2.value);
+            if (isNaN(s1) || isNaN(s2)) { alert("Placar inválido."); return; }
+            addMatchResult(gameId, s1, s2);
+        } else if (e.target.classList.contains('add-team-form')) {
+            e.preventDefault();
+            addTeam(e.target.elements[0].value, e.target.elements[1].value, e.target.dataset.group);
+            e.target.reset();
+        }
+    });
+
+    document.getElementById('main-content').addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-team-btn')) {
+            deleteTeam(e.target.dataset.teamId);
+        }
+    });
+
     document.getElementById('generate-games-button').onclick = generateGroupStageGames;
-    document.getElementById('result-form').onsubmit = (e) => { e.preventDefault(); if (e.target.team1.value === e.target.team2.value) { alert("Uma equipe não pode jogar contra si mesma."); return; } addMatchResult(e.target.team1.value, parseInt(e.target.score1.value), e.target.team2.value, parseInt(e.target.score2.value)); e.target.reset(); };
-    document.getElementById('reset-button').onclick = () => { if (confirm("Tem certeza? TODO o progresso será perdido.")) { localStorage.removeItem('tournamentState_v2'); state = getInitialState(); saveAndRender(); } };
+    document.getElementById('reset-button').onclick = () => { if (confirm("Tem certeza? TODO o progresso será perdido.")) { localStorage.removeItem('tournamentState_v3'); state = getInitialState(); saveAndRender(); } };
 
     // --- INICIALIZAÇÃO ---
     render();

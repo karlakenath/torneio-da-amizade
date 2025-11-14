@@ -19,7 +19,7 @@
             <button id="reset-button">Reiniciar Torneio</button>
         </header>
 
-        <main>
+        <main id="main-content">
             <!-- A) GRUPOS E GERENCIAMENTO DE EQUIPES -->
             <fieldset id="teams-management-fieldset">
                 <section id="groups-section" class="card">
@@ -29,7 +29,7 @@
                         <form class="add-team-form" data-group="A">
                             <input type="text" placeholder="Nome da Equipe" required>
                             <input type="color" value="#007bff">
-                            <button type="submit">Adicionar Time</button>
+                            <button type="submit">Adicionar</button>
                         </form>
                         <table id="table-group-a">
                             <thead><tr><th>Pos</th><th>Equipe</th><th>P</th><th>V</th><th>D</th><th>PM</th><th>PS</th><th>Saldo</th></tr></thead>
@@ -42,7 +42,7 @@
                         <form class="add-team-form" data-group="B">
                             <input type="text" placeholder="Nome da Equipe" required>
                             <input type="color" value="#fd7e14">
-                            <button type="submit">Adicionar Time</button>
+                            <button type="submit">Adicionar</button>
                         </form>
                         <table id="table-group-b">
                              <thead><tr><th>Pos</th><th>Equipe</th><th>P</th><th>V</th><th>D</th><th>PM</th><th>PS</th><th>Saldo</th></tr></thead>
@@ -56,21 +56,6 @@
             <div id="generate-games-container" class="finalize-groups-container">
                 <button id="generate-games-button">Finalizar Grupos e Gerar Jogos</button>
             </div>
-
-            <!-- C) REGISTRAR JOGO -->
-            <fieldset id="result-form-fieldset" disabled>
-                <section id="add-results" class="card">
-                    <h2>REGISTRAR JOGO</h2>
-                    <form id="result-form">
-                        <div class="match-input">
-                            <div class="team-select"><select id="team1" required></select><input type="number" id="score1" min="0" placeholder="0" required></div>
-                            <span class="vs">vs</span>
-                            <div class="team-select"><input type="number" id="score2" min="0" placeholder="0" required><select id="team2" required></select></div>
-                        </div>
-                        <button type="submit">Adicionar Resultado</button>
-                    </form>
-                </section>
-            </fieldset>
 
             <!-- D) JOGOS DA FASE DE GRUPOS -->
             <section id="group-games-section" class="card hidden">
@@ -87,21 +72,21 @@
                 <div class="bracket">
                     <div class="round" id="quarters">
                         <div class="round-title">Quartas de Final</div>
-                        <div class="match-wrapper"><div class="match" id="qf1"></div></div>
-                        <div class="match-wrapper"><div class="match" id="qf2"></div></div>
-                        <div class="match-wrapper"><div class="match" id="qf3"></div></div>
-                        <div class="match-wrapper"><div class="match" id="qf4"></div></div>
+                        <div class="match-wrapper" id="qf1-wrapper"></div>
+                        <div class="match-wrapper" id="qf2-wrapper"></div>
+                        <div class="match-wrapper" id="qf3-wrapper"></div>
+                        <div class="match-wrapper" id="qf4-wrapper"></div>
                     </div>
                     <div class="round" id="semis">
                         <div class="round-title">Semifinais</div>
-                        <div class="match-wrapper"><div class="match" id="sf1"></div></div>
-                        <div class="match-wrapper"><div class="match" id="sf2"></div></div>
+                        <div class="match-wrapper" id="sf1-wrapper"></div>
+                        <div class="match-wrapper" id="sf2-wrapper"></div>
                     </div>
                     <div class="round" id="final-round">
                         <div class="round-title">Final</div>
-                        <div class="match-wrapper"><div class="match" id="final"></div></div>
+                        <div class="match-wrapper" id="final-wrapper"></div>
                         <div class="round-title third-place-title">Disputa 3º Lugar</div>
-                        <div class="match-wrapper"><div class="match" id="third-place"></div></div>
+                        <div class="match-wrapper" id="third-place-wrapper"></div>
                     </div>
                 </div>
             </section>
