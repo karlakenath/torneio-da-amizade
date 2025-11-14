@@ -27,31 +27,46 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const generateBalancedGroupGames = (teams, group) => {
-        const schedule = [];
-        let teamIds = teams.map(t => t.id);
+        const allGames = [];
+        const teamIds = teams.map(t => t.id);
 
-        if (teamIds.length < 2) return [];
-        if (teamIds.length % 2 !== 0) teamIds.push(null); // Add a dummy team for byes
+        // 1. Generate all unique pairings
+        for (let i = 0; i < teamIds.length; i++) {
+            for (let j = i + 1; j < teamIds.length; j++) {
+                allGames.push({ id: self.crypto.randomUUID(), t1: teamIds[i], t2: teamIds[j], s1: null, s2: null, group });
+            }
+        }
 
-        const numTeams = teamIds.length;
-        const numRounds = numTeams - 1;
-        const half = numTeams / 2;
+        if (allGames.length === 0) return [];
 
-        const teamRefs = [...teamIds];
+        // 2. Reorder the games with the new rule
+        const orderedGames = [];
+        let availableGames = [...allGames];
+        
+        orderedGames.push(availableGames.shift());
 
-        for (let round = 0; round < numRounds; round++) {
-            for (let i = 0; i < half; i++) {
-                const team1 = teamRefs[i];
-                const team2 = teamRefs[numTeams - 1 - i];
-                if (team1 && team2) {
-                    schedule.push({ id: self.crypto.randomUUID(), t1: team1, t2: team2, s1: null, s2: null, group });
+        while (availableGames.length > 0) {
+            const lastGame = orderedGames[orderedGames.length - 1];
+            const teamsToAvoid = new Set([lastGame.t1, lastGame.t2]);
+
+            let nextGameIndex = -1;
+            
+            for (let i = 0; i < availableGames.length; i++) {
+                const candidateGame = availableGames[i];
+                if (!teamsToAvoid.has(candidateGame.t1) && !teamsToAvoid.has(candidateGame.t2)) {
+                    nextGameIndex = i;
+                    break;
                 }
             }
-            // Rotate teams, keeping the first one fixed
-            const lastTeam = teamRefs.pop();
-            teamRefs.splice(1, 0, lastTeam);
+
+            if (nextGameIndex === -1) {
+                nextGameIndex = 0;
+            }
+            
+            orderedGames.push(availableGames.splice(nextGameIndex, 1)[0]);
         }
-        return schedule;
+
+        return orderedGames;
     };
 
     const generateGroupStageGames = () => {
@@ -168,7 +183,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const wrapper = document.getElementById(`${id}-wrapper`);
             if (!wrapper) return;
             const matchData = state.playoffMatches[id] || {};
-            if (!matchData.teams) { wrapper.innerHTML = `<div class="match placeholder">${id.toUpperCase()}</div>`; return; }
+            if (!matchData.teams) {
+                let placeholderText = id.toUpperCase();
+                if (id === 'third-place') {
+                    placeholderText = 'Disputa – 3º Lugar';
+                }
+                wrapper.innerHTML = `<div class="match placeholder">${placeholderText}</div>`;
+                return;
+            }
             wrapper.innerHTML = renderGame({ id, ...matchData });
         });
     };
