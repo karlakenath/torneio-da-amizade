@@ -2,6 +2,7 @@
 :root {
     --bg-color: #0c1b2a;
     --card-bg: #1a2c3f;
+    --card-bg-darker: #142333;
     --text-color: #ffffff;
     --border-color: #2a4a6a;
     --accent-color: #00aaff;
@@ -9,67 +10,31 @@
     --loss-color: #f44336;
 }
 
-body {
-    font-family: 'Oswald', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 20px;
-}
-
-#app {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-h1, h2, h3 {
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.card {
-    background-color: var(--card-bg);
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    margin-bottom: 20px;
-}
-
-button {
-    font-family: 'Oswald', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 8px;
-    border: none;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-button:hover {
-    transform: translateY(-2px);
-}
+body { font-family: 'Oswald', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; }
+#app { width: 100%; max-width: 1200px; margin: 0 auto; }
+h1, h2, h3 { font-weight: 700; text-transform: uppercase; }
+.card { background-color: var(--card-bg); border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); margin-bottom: 20px; }
+button { font-family: 'Oswald', sans-serif; font-weight: 700; text-transform: uppercase; cursor: pointer; border-radius: 8px; border: none; transition: all 0.2s; }
+button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+fieldset { border: none; padding: 0; margin: 0; }
+fieldset:disabled { opacity: 0.6; pointer-events: none; }
+.hidden { display: none !important; }
 
 /* HEADER */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    margin-bottom: 20px;
-    background-color: var(--card-bg);
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
+header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin-bottom: 20px; background-color: var(--card-bg); border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
 header h1 { margin: 0; font-size: 2.5em; color: var(--accent-color); }
 header p { margin: 0; font-size: 1.2em; opacity: 0.8; }
 #reset-button { background-color: var(--loss-color); color: var(--text-color); padding: 10px 20px; }
-#reset-button:hover { background-color: #c33025; }
 
-/* (A) SEÇÃO DE GRUPOS */
+/* A) GERENCIAMENTO DE GRUPOS */
 #groups-section { display: flex; gap: 20px; }
 .group-container { flex: 1; }
 .group-container h3 { color: var(--accent-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+
+.team-management-list { list-style: none; padding: 0; margin: 0 0 15px 0; }
+.team-list-item { display: flex; align-items: center; justify-content: space-between; background-color: var(--card-bg-darker); padding: 8px 12px; border-radius: 5px; margin-bottom: 5px; }
+.team-list-name { display: flex; align-items: center; font-weight: 700; }
+.delete-team-btn { background-color: var(--loss-color); color: white; width: 28px; height: 28px; font-size: 1em; line-height: 1; }
 
 .add-team-form { display: flex; gap: 10px; margin-bottom: 15px; }
 .add-team-form input[type="text"] { flex-grow: 1; background: var(--bg-color); border: 1px solid var(--border-color); color: white; padding: 8px; border-radius: 5px; }
@@ -77,18 +42,16 @@ header p { margin: 0; font-size: 1.2em; opacity: 0.8; }
 .add-team-form button { background-color: var(--accent-color); color: white; padding: 0 20px; }
 
 table { width: 100%; border-collapse: collapse; text-align: center; }
-th, td { padding: 10px; }
 thead { background-color: #253a51; }
 tbody tr { border-bottom: 1px solid var(--border-color); }
-tbody tr:last-child { border-bottom: none; }
 td:nth-child(2) { text-align: left; font-weight: 700; }
 .team-color-badge { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; vertical-align: middle; border: 1px solid rgba(255,255,255,0.5); }
 
+/* B) BOTÃO DE FINALIZAÇÃO */
 .finalize-groups-container { margin-bottom: 20px; }
-#finalize-groups-button { width: 100%; padding: 15px; font-size: 1.2em; background-color: var(--win-color); color: white; }
-#finalize-groups-button:disabled { background-color: #6c757d; cursor: not-allowed; }
+#generate-games-button { width: 100%; padding: 15px; font-size: 1.2em; background-color: var(--win-color); color: white; }
 
-/* (B) SEÇÃO DE REGISTRO DE JOGOS */
+/* C) REGISTRAR JOGO */
 #add-results h2 { margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
 .match-input { display: flex; justify-content: space-between; align-items: center; }
 .team-select { display: flex; align-items: center; gap: 10px; flex: 1; }
@@ -97,60 +60,38 @@ td:nth-child(2) { text-align: left; font-weight: 700; }
 select, input[type="number"] { background-color: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 5px; padding: 8px; font-family: 'Oswald', sans-serif; }
 select { flex-grow: 1; }
 input[type="number"] { width: 60px; text-align: center; font-size: 1.2em; }
-#result-form button { background-color: var(--accent-color); color: var(--text-color); border: none; padding: 12px; font-size: 1.1em; margin-top: 20px; width: 100%; }
+#result-form button { background-color: var(--accent-color); color: var(--text-color); padding: 12px; font-size: 1.1em; margin-top: 20px; width: 100%; }
 
-/* (C) SEÇÃO DO CHAVEAMENTO FINAL */
+/* D) JOGOS DA FASE DE GRUPOS */
+#group-games-section h2 { margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+.group-games-display { display: flex; gap: 20px; }
+.group-games-display > div { flex: 1; }
+.group-games-display h3 { color: var(--accent-color); }
+.group-games-display ul { list-style: none; padding: 0; }
+.group-games-display li { background-color: var(--card-bg-darker); padding: 10px 15px; border-radius: 5px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 1.1em; }
+.game-status-pending { font-style: italic; opacity: 0.7; }
+.game-score { font-weight: 700; }
+
+/* E, F, G) CHAVEAMENTO */
 #playoffs h2 { margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
 .bracket { display: flex; justify-content: space-between; }
 .round { flex: 1; display: flex; flex-direction: column; justify-content: space-around; }
 .round-title { text-align: center; font-size: 1.2em; margin-bottom: 30px; }
 .third-place-title { margin-top: 60px; }
-
-.match-wrapper { display: flex; flex-direction: column; justify-content: center; position: relative; }
+.match-wrapper { position: relative; }
 #quarters .match-wrapper { margin-bottom: 45px; }
 #semis .match-wrapper { margin-bottom: 150px; }
-
 .match { background-color: #253a51; border-radius: 8px; padding: 10px; min-height: 60px; display: flex; flex-direction: column; justify-content: center; }
 .match-team { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
-.team-name { display: flex; align-items: center; }
-.team-score { font-weight: 700; }
-.winner .team-name, .winner .team-score { font-weight: 700; color: var(--win-color); }
-.loser { opacity: 0.6; }
+.winner .match-team { font-weight: 700; color: var(--win-color); }
+.loser .match-team { opacity: 0.6; }
 .placeholder { color: #aaa; font-style: italic; text-align: center; padding: 20px 0; }
-
-/* Conectores do Chaveamento */
-.connector { position: absolute; background-color: var(--border-color); }
-#qf1 + .connector, #qf3 + .connector {
-    width: 2px; height: 75px; /* Vertical */
-    top: 35px; right: -30px;
-}
-#qf1 + .connector::after, #qf3 + .connector::after {
-    content: ''; position: absolute; background-color: var(--border-color);
-    width: 30px; height: 2px; /* Horizontal */
-    left: 0; bottom: 0;
-}
-#qf2 + .connector, #qf4 + .connector { display: none; } /* Sem conector */
-
-#sf1 + .connector, #sf2 + .connector {
-    width: 2px; height: 160px; /* Vertical */
-    top: 35px; right: -30px;
-}
-#sf1 + .connector::after, #sf2 + .connector::after {
-    content: ''; position: absolute; background-color: var(--border-color);
-    width: 30px; height: 2px; /* Horizontal */
-    left: 0; top: 50%;
-}
-
-/* Ajustes de alinhamento */
 #semis { margin: 0 60px; }
 #final-round { margin-left: 60px; }
 
 /* Responsividade */
 @media (max-width: 900px) {
-    #groups-section { flex-direction: column; }
-    .bracket { flex-direction: column; }
-    .round { margin: 0 0 40px 0 !important; }
-    .connector, .connector::after { display: none; } /* Simplifica em telas pequenas */
+    #groups-section, .group-games-display, .bracket { flex-direction: column; }
 }
 @media (max-width: 768px) {
     header { flex-direction: column; gap: 15px; text-align: center; }

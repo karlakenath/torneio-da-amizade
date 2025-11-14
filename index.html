@@ -20,104 +20,88 @@
         </header>
 
         <main>
-            <!-- (A) SEÇÃO DE GRUPOS -->
-            <section id="groups-section" class="card">
-                <div class="group-container" id="group-a-container">
-                    <h3>GRUPO A</h3>
-                    <form class="add-team-form" data-group="A">
-                        <input type="text" placeholder="Nome da Equipe" required>
-                        <input type="color" value="#007bff">
-                        <button type="submit">Adicionar</button>
-                    </form>
-                    <table id="table-group-a">
-                        <thead>
-                            <tr>
-                                <th>Pos</th><th>Equipe</th><th>P</th><th>V</th><th>D</th><th>PM</th><th>PS</th><th>Saldo</th>
-                            </tr>
-                        </thead>
-                        <tbody><!-- JS --></tbody>
-                    </table>
-                </div>
-                <div class="group-container" id="group-b-container">
-                    <h3>GRUPO B</h3>
-                    <form class="add-team-form" data-group="B">
-                        <input type="text" placeholder="Nome da Equipe" required>
-                        <input type="color" value="#fd7e14">
-                        <button type="submit">Adicionar</button>
-                    </form>
-                    <table id="table-group-b">
-                        <thead>
-                            <tr>
-                                <th>Pos</th><th>Equipe</th><th>P</th><th>V</th><th>D</th><th>PM</th><th>PS</th><th>Saldo</th>
-                            </tr>
-                        </thead>
-                        <tbody><!-- JS --></tbody>
-                    </table>
-                </div>
-            </section>
-            <div class="finalize-groups-container">
-                <button id="finalize-groups-button">Finalizar Fase de Grupos e Gerar Chaveamento</button>
+            <!-- A) GRUPOS E GERENCIAMENTO DE EQUIPES -->
+            <fieldset id="teams-management-fieldset">
+                <section id="groups-section" class="card">
+                    <div class="group-container" id="group-a-container">
+                        <h3>GRUPO A</h3>
+                        <ul class="team-management-list" id="team-list-a"></ul>
+                        <form class="add-team-form" data-group="A">
+                            <input type="text" placeholder="Nome da Equipe" required>
+                            <input type="color" value="#007bff">
+                            <button type="submit">Adicionar Time</button>
+                        </form>
+                        <table id="table-group-a">
+                            <thead><tr><th>Pos</th><th>Equipe</th><th>P</th><th>V</th><th>D</th><th>PM</th><th>PS</th><th>Saldo</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="group-container" id="group-b-container">
+                        <h3>GRUPO B</h3>
+                        <ul class="team-management-list" id="team-list-b"></ul>
+                        <form class="add-team-form" data-group="B">
+                            <input type="text" placeholder="Nome da Equipe" required>
+                            <input type="color" value="#fd7e14">
+                            <button type="submit">Adicionar Time</button>
+                        </form>
+                        <table id="table-group-b">
+                             <thead><tr><th>Pos</th><th>Equipe</th><th>P</th><th>V</th><th>D</th><th>PM</th><th>PS</th><th>Saldo</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </fieldset>
+
+            <!-- B) BOTÃO DE FINALIZAÇÃO DE GRUPOS -->
+            <div id="generate-games-container" class="finalize-groups-container">
+                <button id="generate-games-button">Finalizar Grupos e Gerar Jogos</button>
             </div>
 
-            <!-- (B) SEÇÃO DE REGISTRO DE JOGOS -->
-            <section id="add-results" class="card">
-                <h2>REGISTRAR JOGO</h2>
-                <form id="result-form">
-                    <div class="match-input">
-                        <div class="team-select">
-                            <select id="team1" name="team1" required></select>
-                            <input type="number" id="score1" name="score1" min="0" placeholder="0" required>
+            <!-- C) REGISTRAR JOGO -->
+            <fieldset id="result-form-fieldset" disabled>
+                <section id="add-results" class="card">
+                    <h2>REGISTRAR JOGO</h2>
+                    <form id="result-form">
+                        <div class="match-input">
+                            <div class="team-select"><select id="team1" required></select><input type="number" id="score1" min="0" placeholder="0" required></div>
+                            <span class="vs">vs</span>
+                            <div class="team-select"><input type="number" id="score2" min="0" placeholder="0" required><select id="team2" required></select></div>
                         </div>
-                        <span class="vs">vs</span>
-                        <div class="team-select">
-                            <input type="number" id="score2" name="score2" min="0" placeholder="0" required>
-                            <select id="team2" name="team2" required></select>
-                        </div>
-                    </div>
-                    <button type="submit">Adicionar Resultado</button>
-                </form>
+                        <button type="submit">Adicionar Resultado</button>
+                    </form>
+                </section>
+            </fieldset>
+
+            <!-- D) JOGOS DA FASE DE GRUPOS -->
+            <section id="group-games-section" class="card hidden">
+                <h2>Jogos da Fase de Grupos</h2>
+                <div class="group-games-display">
+                    <div id="group-a-games"><h3>GRUPO A</h3><ul></ul></div>
+                    <div id="group-b-games"><h3>GRUPO B</h3><ul></ul></div>
+                </div>
             </section>
 
-            <!-- (C) SEÇÃO DO CHAVEAMENTO FINAL -->
-            <section id="playoffs" class="card">
+            <!-- E, F, G) CHAVEAMENTO FINAL -->
+            <section id="playoffs" class="card hidden">
                 <h2>FASE FINAL</h2>
                 <div class="bracket">
                     <div class="round" id="quarters">
                         <div class="round-title">Quartas de Final</div>
-                        <div class="match-wrapper">
-                            <div class="match" id="qf1"></div>
-                            <div class="connector" id="c1"></div>
-                        </div>
-                        <div class="match-wrapper">
-                            <div class="match" id="qf2"></div>
-                        </div>
-                        <div class="match-wrapper">
-                            <div class="match" id="qf3"></div>
-                            <div class="connector" id="c2"></div>
-                        </div>
-                        <div class="match-wrapper">
-                            <div class="match" id="qf4"></div>
-                        </div>
+                        <div class="match-wrapper"><div class="match" id="qf1"></div></div>
+                        <div class="match-wrapper"><div class="match" id="qf2"></div></div>
+                        <div class="match-wrapper"><div class="match" id="qf3"></div></div>
+                        <div class="match-wrapper"><div class="match" id="qf4"></div></div>
                     </div>
                     <div class="round" id="semis">
                         <div class="round-title">Semifinais</div>
-                        <div class="match-wrapper">
-                            <div class="match" id="sf1"></div>
-                            <div class="connector" id="c3"></div>
-                        </div>
-                        <div class="match-wrapper">
-                            <div class="match" id="sf2"></div>
-                        </div>
+                        <div class="match-wrapper"><div class="match" id="sf1"></div></div>
+                        <div class="match-wrapper"><div class="match" id="sf2"></div></div>
                     </div>
                     <div class="round" id="final-round">
                         <div class="round-title">Final</div>
-                        <div class="match-wrapper">
-                            <div class="match" id="final"></div>
-                        </div>
+                        <div class="match-wrapper"><div class="match" id="final"></div></div>
                         <div class="round-title third-place-title">Disputa 3º Lugar</div>
-                        <div class="match-wrapper">
-                            <div class="match" id="third-place"></div>
-                        </div>
+                        <div class="match-wrapper"><div class="match" id="third-place"></div></div>
                     </div>
                 </div>
             </section>
