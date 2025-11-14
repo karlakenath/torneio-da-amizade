@@ -90,3 +90,19 @@ td:nth-child(2) { text-align: left; font-weight: 700; }
 @media (max-width: 768px) {
     header { flex-direction: column; gap: 15px; text-align: center; }
 }
+
+/* H) PÓDIO FINAL */
+#podium-section h2 { text-align: center; margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+.podium-display { display: flex; justify-content: center; align-items: flex-end; gap: 20px; text-align: center; padding-top: 20px; flex-wrap: wrap; }
+.podium-place { background-color: var(--card-bg-darker); border-radius: 10px; padding: 20px; width: 220px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.podium-place h3 { margin: 0 0 15px 0; color: var(--accent-color); font-size: 1.5em; }
+.podium-team { font-size: 1.3em; font-weight: 700; }
+#podium-1st { order: 2; margin-bottom: 30px; }
+#podium-2nd { order: 1; }
+#podium-3rd { order: 3; }
+
+@media (max-width: 768px) {
+    .podium-display { flex-direction: column; align-items: center; gap: 15px; }
+    #podium-1st, #podium-2nd, #podium-3rd { order: 0; margin-bottom: 0; }
+    #podium-1st { order: -1; } /* Garante que o 1º lugar fique no topo em telas pequenas */
+}

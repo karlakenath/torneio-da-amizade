@@ -149,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTables();
         renderGroupStageGames();
         renderBracket();
+        renderPodium();
         updateUIMode();
     };
 
@@ -193,6 +194,33 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             wrapper.innerHTML = renderGame({ id, ...matchData });
         });
+    };
+
+    const renderPodium = () => {
+        const finalMatch = state.playoffMatches.final;
+        const thirdPlaceMatch = state.playoffMatches['third-place'];
+        const podiumSection = document.getElementById('podium-section');
+
+        if (finalMatch.winner && thirdPlaceMatch.winner) {
+            podiumSection.classList.remove('hidden');
+
+            const winnerId = finalMatch.winner;
+            const runnerUpId = finalMatch.teams.find(id => id !== winnerId);
+            const thirdPlaceId = thirdPlaceMatch.winner;
+
+            const winner = state.teams.find(t => t.id === winnerId);
+            const runnerUp = state.teams.find(t => t.id === runnerUpId);
+            const thirdPlace = state.teams.find(t => t.id === thirdPlaceId);
+
+            const renderTeamHTML = (team) => `<span class="team-color-badge" style="background-color:${team.color};"></span>${team.name}`;
+
+            document.querySelector('#podium-1st .podium-team').innerHTML = renderTeamHTML(winner);
+            document.querySelector('#podium-2nd .podium-team').innerHTML = renderTeamHTML(runnerUp);
+            document.querySelector('#podium-3rd .podium-team').innerHTML = renderTeamHTML(thirdPlace);
+
+        } else {
+            podiumSection.classList.add('hidden');
+        }
     };
 
     const renderGame = (game) => {
