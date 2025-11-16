@@ -57,54 +57,66 @@ td:nth-child(2) { text-align: left; font-weight: 700; }
 .group-games-display > div { flex: 1; }
 .group-games-display h3 { color: var(--accent-color); }
 .group-games-display ul { list-style: none; padding: 0; }
-/* Estilos para os cards de jogo (substitui .inline-result-form e .final-score) */
-.group-games-display li, .match-wrapper { 
-    background-color: var(--card-bg-darker); 
-    padding: 0; /* Removido para o card ocupar todo o espaço */
-    border-radius: 5px; 
-    margin-bottom: 8px; 
+/* Ajustes finos nos cards de jogo para alinhamento e proporção perfeitos */
+.group-games-display li, .match-wrapper {
+    background-color: var(--card-bg-darker);
+    padding: 0; /* O padding será aplicado no .match-card */
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex; /* Garante que o card interno preencha o espaço */
 }
 
 .match-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 15px;
+    padding: 8px 12px; /* Padding interno uniforme */
     width: 100%;
+    gap: 10px;
 }
 
 .match-card * { box-sizing: border-box; }
 
+.team-color-badge {
+    display: inline-block;
+    width: 10px; /* Tamanho reduzido */
+    height: 10px; /* Tamanho reduzido */
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    flex-shrink: 0; /* Impede que a bolinha seja espremida */
+}
+
 .team-info {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex: 1; /* Ocupa o espaço disponível */
-    width: 0;  /* Base de cálculo 0 para crescimento simétrico */
-    font-size: 1.1em;
+    gap: 8px; /* Espaçamento reduzido entre bolinha e nome */
+    flex: 1;
+    min-width: 0; /* Permite que o flexbox encolha o container se necessário */
 }
-.team-info.team-left { 
-    justify-content: flex-start; 
-}
-.team-info.team-right { 
-    justify-content: flex-end; 
-    text-align: right; 
+.team-info.team-left { justify-content: flex-start; }
+.team-info.team-right { justify-content: flex-end; }
+
+.team-name {
+    font-size: 1em; /* Fonte ligeiramente menor */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adiciona '...' para nomes muito longos */
 }
 
 .score-info, .score-info-form {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 15px;
-    font-size: 1.4em;
+    gap: 12px;
+    font-size: 1.3em; /* Placar ligeiramente menor */
     font-weight: 700;
-    flex-shrink: 0; /* Impede que o placar seja espremido */
-    padding: 0 20px;
+    flex-shrink: 0;
+    padding: 0 10px;
 }
 .score-separator { color: var(--accent-color); }
 
 .score-info-form input {
-    width: 45px;
+    width: 40px;
     text-align: center;
     background-color: var(--bg-color);
     border: 1px solid var(--border-color);
@@ -115,19 +127,16 @@ td:nth-child(2) { text-align: left; font-weight: 700; }
     border-radius: 4px;
 }
 
-.inline-result-form {
-    gap: 10px;
-}
-
 .inline-result-form button {
     background-color: var(--win-color);
     color: white;
-    width: 32px;
-    height: 32px;
-    font-size: 1.2em;
+    width: 30px; /* Botão menor */
+    height: 30px; /* Botão menor */
+    font-size: 1.1em;
     line-height: 1;
     padding: 0;
-    margin-left: 10px;
+    border-radius: 5px;
+    flex-shrink: 0;
 }
 
 .match-card.waiting .team-info.team-right {
