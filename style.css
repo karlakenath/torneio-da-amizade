@@ -66,6 +66,7 @@ td:nth-child(2) { text-align: left; font-weight: 700; }
 .final-score { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .final-score .teams { flex-grow: 1; font-size: 1.1em; }
 .final-score .score { font-weight: 700; font-size: 1.2em; }
+.placeholder-team { font-style: italic; opacity: 0.7; }
 
 /* E, F, G) CHAVEAMENTO */
 #playoffs h2 { margin-top: 0; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }

@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 match.scores = [s1, s2];
                 const [t1Id, t2Id] = match.teams;
                 match.winner = s1 > s2 ? t1Id : t2Id;
-                generatePlayoffs(); // Re-check for next stage
+                updateExistingPlayoffs(); // Re-check for next stage
             }
         }
         recalculateTeamStats();
@@ -120,26 +120,51 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const generatePlayoffs = () => {
-        if (state.playoffsGenerated) { // Update existing playoffs
-            const { qf1, qf2, qf3, qf4, sf1, sf2 } = state.playoffMatches;
-            if (qf1.winner && qf2.winner && !sf1.teams) sf1.teams = [qf1.winner, qf2.winner];
-            if (qf3.winner && qf4.winner && !sf2.teams) sf2.teams = [qf3.winner, qf4.winner];
-            if (sf1.winner && sf2.winner && !state.playoffMatches.final.teams) {
-                state.playoffMatches.final.teams = [sf1.winner, sf2.winner];
-                state.playoffMatches['third-place'].teams = [sf1.teams.find(id => id !== sf1.winner), sf2.teams.find(id => id !== sf2.winner)];
-            }
+        // A lógica de atualização foi movida para uma função separada para maior clareza.
+        if (state.playoffsGenerated) {
+            updateExistingPlayoffs();
             return;
         }
+
         const groupA = state.teams.filter(t => t.group === 'A').sort(sortTeams);
         const groupB = state.teams.filter(t => t.group === 'B').sort(sortTeams);
-        if (groupA.length < 4 || groupB.length < 4) { alert("São necessárias 4 equipes em cada grupo que tenham jogado para gerar a fase final."); return; }
         
+        if (groupA.length < 3 || groupB.length < 3) {
+            alert("São necessárias pelo menos 3 equipes em cada grupo que tenham jogado para gerar a fase final.");
+            return;
+        }
+        
+        // Nova estrutura de playoffs
         state.playoffMatches = {
-            qf1: { teams: [groupA[0].id, groupB[3].id] }, qf2: { teams: [groupA[1].id, groupB[2].id] },
-            qf3: { teams: [groupB[0].id, groupA[3].id] }, qf4: { teams: [groupB[1].id, groupA[2].id] },
-            sf1: {}, sf2: {}, final: {}, 'third-place': {}
+            // Pré-Semifinais
+            psf1: { teams: [groupA[1].id, groupB[2].id], name: "Pré-Semi 1" }, // 2A vs 3B
+            psf2: { teams: [groupA[2].id, groupB[1].id], name: "Pré-Semi 2" }, // 3A vs 2B
+            // Semifinais (os primeiros colocados já estão aqui)
+            sf1: { teams: [groupA[0].id, null], name: "Semi 1" }, // 1A vs Vencedor PSF2
+            sf2: { teams: [groupB[0].id, null], name: "Semi 2" }, // 1B vs Vencedor PSF1
+            // Final e 3º Lugar
+            final: { name: "Final" },
+            'third-place': { name: "Disputa 3º Lugar" }
         };
         state.playoffsGenerated = true;
+    };
+
+    const updateExistingPlayoffs = () => {
+        const { psf1, psf2, sf1, sf2, final } = state.playoffMatches;
+
+        // Preenche as semifinais com os vencedores das pré-semifinais
+        if (psf1.winner && sf2.teams[1] === null) {
+            sf2.teams[1] = psf1.winner;
+        }
+        if (psf2.winner && sf1.teams[1] === null) {
+            sf1.teams[1] = psf2.winner;
+        }
+
+        // Preenche a final e a disputa de 3º lugar com os resultados das semifinais
+        if (sf1.winner && sf2.winner && !final.teams) {
+            final.teams = [sf1.winner, sf2.winner];
+            state.playoffMatches['third-place'].teams = [sf1.teams.find(id => id !== sf1.winner), sf2.teams.find(id => id !== sf2.winner)];
+        }
     };
     const sortTeams = (a, b) => b.v - a.v || (b.saldo - a.saldo) || (b.pm - a.pm) || (a.ps - b.ps) || 0;
 
@@ -183,12 +208,17 @@ document.addEventListener('DOMContentLoaded', () => {
         Object.keys(state.playoffMatches).forEach(id => {
             const wrapper = document.getElementById(`${id}-wrapper`);
             if (!wrapper) return;
+
             const matchData = state.playoffMatches[id] || {};
+            
+            // Lida com semifinais antes de estarem completas
+            if ((id === 'sf1' || id === 'sf2') && matchData.teams && !matchData.teams[1]) {
+                 wrapper.innerHTML = renderGame({ id, ...matchData });
+                 return;
+            }
+
             if (!matchData.teams) {
-                let placeholderText = id.toUpperCase();
-                if (id === 'third-place') {
-                    placeholderText = 'Disputa – 3º Lugar';
-                }
+                let placeholderText = matchData.name || id.toUpperCase();
                 wrapper.innerHTML = `<div class="match placeholder">${placeholderText}</div>`;
                 return;
             }
@@ -228,6 +258,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const t2 = state.teams.find(t => t.id === (game.t2 || game.teams[1]));
         const s1 = game.s1 ?? game.scores?.[0];
         const s2 = game.s2 ?? game.scores?.[1];
+
+        // Lida com o caso de time indefinido (ex: semifinal esperando adversário)
+        if (!t1 || !t2) {
+            const definedTeam = t1 || t2;
+            return `<div class="final-score">
+                        <span class="teams">
+                            <span class="team-color-badge" style="background-color:${definedTeam.color};"></span>${definedTeam.name} vs <span class="placeholder-team">Aguardando...</span>
+                        </span>
+                    </div>`;
+        }
 
         const teamsHTML = `<span class="teams"><span class="team-color-badge" style="background-color:${t1.color};"></span>${t1.name} vs <span class="team-color-badge" style="background-color:${t2.color};"></span>${t2.name}</span>`;
 
