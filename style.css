@@ -73,15 +73,23 @@ td:nth-child(2) { text-align: left; font-weight: 700; }
     width: 100%;
 }
 
+.match-card * { box-sizing: border-box; }
+
 .team-info {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex: 1;
+    flex: 1; /* Ocupa o espaço disponível */
+    width: 0;  /* Base de cálculo 0 para crescimento simétrico */
     font-size: 1.1em;
 }
-.team-info.team-left { justify-content: flex-start; }
-.team-info.team-right { justify-content: flex-end; text-align: right; }
+.team-info.team-left { 
+    justify-content: flex-start; 
+}
+.team-info.team-right { 
+    justify-content: flex-end; 
+    text-align: right; 
+}
 
 .score-info, .score-info-form {
     display: flex;
@@ -90,7 +98,7 @@ td:nth-child(2) { text-align: left; font-weight: 700; }
     gap: 15px;
     font-size: 1.4em;
     font-weight: 700;
-    flex: 0 1 auto; /* Não cresce, encolhe se necessário */
+    flex-shrink: 0; /* Impede que o placar seja espremido */
     padding: 0 20px;
 }
 .score-separator { color: var(--accent-color); }
