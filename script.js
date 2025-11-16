@@ -259,25 +259,46 @@ document.addEventListener('DOMContentLoaded', () => {
         const s1 = game.s1 ?? game.scores?.[0];
         const s2 = game.s2 ?? game.scores?.[1];
 
-        // Lida com o caso de time indefinido (ex: semifinal esperando adversário)
+        const teamInfoLeft = (team) => `
+            <span class="team-info team-left">
+                <span class="team-color-badge" style="background-color:${team.color};"></span>
+                <span class="team-name">${team.name}</span>
+            </span>`;
+
+        const teamInfoRight = (team) => `
+            <span class="team-info team-right">
+                <span class="team-name">${team.name}</span>
+                <span class="team-color-badge" style="background-color:${team.color};"></span>
+            </span>`;
+        
         if (!t1 || !t2) {
             const definedTeam = t1 || t2;
-            return `<div class="final-score">
-                        <span class="teams">
-                            <span class="team-color-badge" style="background-color:${definedTeam.color};"></span>${definedTeam.name} vs <span class="placeholder-team">Aguardando...</span>
-                        </span>
+            return `<div class="match-card waiting">
+                        ${teamInfoLeft(definedTeam)}
+                        <span class="score-info"><span class="placeholder-team">Aguardando...</span></span>
+                        <span class="team-info team-right"></span>
                     </div>`;
         }
 
-        const teamsHTML = `<span class="teams"><span class="team-color-badge" style="background-color:${t1.color};"></span>${t1.name} vs <span class="team-color-badge" style="background-color:${t2.color};"></span>${t2.name}</span>`;
-
         if (s1 !== null && s1 !== undefined) {
-            return `<div class="final-score">${teamsHTML} <span class="score">${s1} - ${s2}</span></div>`;
+            return `<div class="match-card final-score">
+                        ${teamInfoLeft(t1)}
+                        <span class="score-info">
+                            <span class="score-value">${s1}</span>
+                            <span class="score-separator">x</span>
+                            <span class="score-value">${s2}</span>
+                        </span>
+                        ${teamInfoRight(t2)}
+                    </div>`;
         } else {
-            return `<form class="inline-result-form" data-game-id="${game.id}">
-                        ${teamsHTML}
-                        <input type="number" name="s1" placeholder="0" required min="0">
-                        <input type="number" name="s2" placeholder="0" required min="0">
+            return `<form class="match-card inline-result-form" data-game-id="${game.id}">
+                        ${teamInfoLeft(t1)}
+                        <span class="score-info-form">
+                            <input type="number" name="s1" placeholder="0" required min="0">
+                            <span class="score-separator">x</span>
+                            <input type="number" name="s2" placeholder="0" required min="0">
+                        </span>
+                        ${teamInfoRight(t2)}
                         <button type="submit">✔️</button>
                     </form>`;
         }
