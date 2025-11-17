@@ -75,21 +75,29 @@
             <section id="playoffs" class="card hidden">
                 <h2>FASE FINAL</h2>
                 <div class="bracket">
-                    <div class="round" id="pre-semis">
-                        <div class="round-title">Pré-Semifinal</div>
-                        <div class="match-wrapper" id="psf1-wrapper"></div>
-                        <div class="match-wrapper" id="psf2-wrapper"></div>
+                    <!-- Linha 1: Pré-Semifinais e Semifinais -->
+                    <div class="bracket-row">
+                        <div class="round" id="pre-semis">
+                            <div class="round-title">Pré-Semifinal</div>
+                            <div class="match-wrapper" id="psf1-wrapper"></div>
+                            <div class="match-wrapper" id="psf2-wrapper"></div>
+                        </div>
+                        <div class="round" id="semis">
+                            <div class="round-title">Semifinais</div>
+                            <div class="match-wrapper" id="sf1-wrapper"></div>
+                            <div class="match-wrapper" id="sf2-wrapper"></div>
+                        </div>
                     </div>
-                    <div class="round" id="semis">
-                        <div class="round-title">Semifinais</div>
-                        <div class="match-wrapper" id="sf1-wrapper"></div>
-                        <div class="match-wrapper" id="sf2-wrapper"></div>
-                    </div>
-                    <div class="round" id="final-round">
-                        <div class="round-title">Final</div>
-                        <div class="match-wrapper" id="final-wrapper"></div>
-                        <div class="round-title third-place-title">Disputa 3º Lugar</div>
-                        <div class="match-wrapper" id="third-place-wrapper"></div>
+                    <!-- Linha 2: Final e 3º Lugar -->
+                    <div class="bracket-final-row">
+                        <div class="round" id="final-round">
+                            <div class="round-title">Final</div>
+                            <div class="match-wrapper" id="final-wrapper"></div>
+                        </div>
+                        <div class="round" id="third-place-round">
+                            <div class="round-title">Disputa 3º Lugar</div>
+                            <div class="match-wrapper" id="third-place-wrapper"></div>
+                        </div>
                     </div>
                 </div>
             </section>

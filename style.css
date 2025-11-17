@@ -114,301 +114,759 @@ header p {
 }
 
 /* -------------------------------------------------------------------------- */
-/* GERENCIAMENTO DE GRUPOS (AJUSTE 3) */
+
+/* GERENCIAMENTO DE GRUPOS (AJUSTES 1, 2) */
+
 /* -------------------------------------------------------------------------- */
+
 #groups-section { display: flex; gap: 20px; }
+
 .group-container { flex: 1; }
+
 .group-container h3 {
+
     color: var(--text-color);
+
     border-bottom: 2px solid transparent;
+
     padding-bottom: 10px;
+
     font-size: 2em;
+
     position: relative;
-}
-.group-container h3::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 40%;
-    height: 2px;
-    background-color: var(--accent-color);
-}
-#group-b-container h3::after {
-    background-color: var(--action-color);
+
 }
 
-/* Formulário de Adição de Equipe (Layout Simples) */
-.add-team-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-.add-team-form input[type="text"] {
-    flex-grow: 1;
-    background: var(--bg-color);
-    border: 1px solid var(--border-color);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-family: var(--font-main);
-    height: 40px;
-}
-.add-team-form input[type="color"] {
-    width: 40px;
-    height: 40px;
-    border: 1px solid var(--border-color);
-    background: transparent;
-    cursor: pointer;
-    padding: 0;
-    border-radius: 5px;
-}
-.add-team-form button {
+.group-container h3::after {
+
+    content: '';
+
+    position: absolute;
+
+    bottom: -2px;
+
+    left: 0;
+
+    width: 40%;
+
+    height: 2px;
+
     background-color: var(--accent-color);
-    color: var(--bg-color);
-    font-size: 1em;
-    padding: 0 20px;
+
 }
+
+#group-b-container h3::after {
+
+    background-color: var(--action-color);
+
+}
+
+
+
+/* Lista de times */
+
+.team-management-list {
+
+    list-style: none;
+
+    padding: 0;
+
+    margin-bottom: 15px;
+
+}
+
+.team-list-item {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 8px 0;
+
+    border-bottom: 1px solid var(--border-color);
+
+}
+
+.team-list-name {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px; /* Espaçamento entre bolinha e nome */
+
+}
+
+.team-list-item .team-color-badge {
+
+    width: 14px;
+
+    height: 14px;
+
+}
+
+
+
+/* Botão de Excluir (Ajuste 1) */
+
+.delete-team-btn {
+
+    background-color: transparent;
+
+    color: var(--loss-color);
+
+    border: 1px solid var(--loss-color);
+
+    border-radius: 5px;
+
+    font-size: 0.8em;
+
+    font-weight: bold;
+
+    padding: 3px 8px;
+
+    line-height: 1;
+
+    opacity: 0.7;
+
+}
+
+.delete-team-btn:hover {
+
+    background-color: var(--loss-color);
+
+    color: #000;
+
+    opacity: 1;
+
+}
+
+
+
+/* Formulário de Adição de Equipe */
+
+.add-team-form {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 15px;
+
+}
+
+.add-team-form input[type="text"] {
+
+    flex-grow: 1;
+
+    background: var(--bg-color);
+
+    border: 1px solid var(--border-color);
+
+    color: white;
+
+    padding: 8px 12px;
+
+    border-radius: 5px;
+
+    font-family: var(--font-main);
+
+    height: 38px;
+
+}
+
+.add-team-form input[type="color"] {
+
+    width: 38px;
+
+    height: 38px;
+
+    border: 1px solid var(--border-color);
+
+    background: transparent;
+
+    cursor: pointer;
+
+    padding: 0;
+
+    border-radius: 5px;
+
+}
+
+.add-team-form button {
+
+    background-color: var(--accent-color);
+
+    color: var(--bg-color);
+
+    font-size: 1em;
+
+    padding: 0 20px;
+
+}
+
+
 
 table {
+
     width: 100%;
+
     border-collapse: collapse;
+
     text-align: center;
+
     font-family: var(--font-main);
+
+    margin-top: 20px;
+
 }
+
 thead {
+
     font-family: var(--font-display);
+
     font-size: 1.2em;
+
     letter-spacing: 1px;
+
     color: var(--accent-color);
+
 }
+
 tbody tr {
+
     border-bottom: 1px solid var(--border-color);
+
     transition: background-color 0.3s ease;
+
 }
+
 tbody tr:hover { background-color: var(--card-bg-darker); }
+
+td { padding: 8px 4px; }
+
 td:nth-child(2) { text-align: left; }
+
 td .team-name { font-size: 1em; letter-spacing: 0; }
 
+td .team-color-badge {
+
+    display: inline-block;
+
+    width: 12px;
+
+    height: 12px;
+
+    border-radius: 50%;
+
+    margin-right: 8px;
+
+    vertical-align: middle;
+
+}
+
+
+
+
+
 /* -------------------------------------------------------------------------- */
-/* LAYOUT DOS JOGOS DE GRUPO (AJUSTE 4) */
+
+/* LAYOUT DOS JOGOS DE GRUPO */
+
 /* -------------------------------------------------------------------------- */
+
 #group-games-section h2 {
+
     font-size: 2.5em;
+
     text-align: center;
+
     color: var(--accent-color);
+
 }
+
 .group-games-display {
+
     display: flex;
+
     gap: 20px;
+
 }
+
 .group-games-display > div { flex: 1; }
+
 .group-games-display h3 {
+
     font-size: 1.8em;
+
     text-align: center;
+
     color: var(--text-color-darker);
+
 }
+
 .group-games-display ul { list-style: none; padding: 0; }
 
+
+
 /* -------------------------------------------------------------------------- */
-/* CARDS DE JOGO (AJUSTES 2 e 5) */
+
+/* CARDS DE JOGO (AJUSTES 3, 4) */
+
 /* -------------------------------------------------------------------------- */
+
 .group-games-display li, .match-wrapper {
+
     background: linear-gradient(145deg, var(--card-bg), var(--card-bg-darker));
+
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    margin-bottom: 8px;
+
+    border-radius: 10px;
+
+    margin-bottom: 10px;
+
     display: flex;
+
     transition: all 0.3s ease;
+
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+
 }
+
 .group-games-display li:hover, .match-wrapper:hover {
+
     border-color: var(--accent-color);
-    transform: scale(1.02);
+
+    transform: scale(1.01);
+
 }
+
 .group-games-display li:nth-child(odd) {
+
     background: linear-gradient(145deg, var(--card-bg-darker), #0c2135);
+
 }
+
+
 
 .match-card {
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
-    padding: 10px 15px;
+
+    padding: 12px 15px;
+
     width: 100%;
-    gap: 10px;
+
+    gap: 8px;
+
 }
+
 .match-card * { box-sizing: border-box; }
 
+
+
 .team-color-badge {
+
     width: 12px;
+
     height: 12px;
+
     border-radius: 50%;
+
     border: 1px solid rgba(255, 255, 255, 0.7);
+
     flex-shrink: 0;
+
 }
+
+
 
 .team-info {
+
     display: flex;
+
     align-items: center;
+
     gap: 10px;
+
     flex: 1;
-    min-width: 0;
+
+    min-width: 0; /* Previne que o flex item cresça demais */
+
 }
+
+.team-info.team-right {
+
+    justify-content: flex-end; /* Alinha o time da direita */
+
+}
+
+
+
 .team-name {
+
     font-family: var(--font-display);
-    font-size: 1.4em; /* Fonte ajustada */
+
+    font-size: 1.3em; /* Fonte ligeiramente reduzida */
+
     letter-spacing: 1px;
+
     white-space: nowrap;
+
     overflow: hidden;
+
     text-overflow: ellipsis;
+
 }
+
+
 
 .score-info, .score-info-form {
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
-    gap: 10px;
+
+    gap: 8px;
+
     font-family: var(--font-display);
-    font-size: 1.6em; /* Fonte ajustada */
+
+    font-size: 1.5em;
+
     flex-shrink: 0;
-    padding: 0 10px;
+
+    padding: 0 5px;
+
 }
+
 .score-separator { color: var(--accent-color); }
 
-/* Inputs de Pontuação Ajustados */
+
+
+/* Inputs de Pontuação Ajustados (Ajuste 3) */
+
 .score-info-form input {
-    width: 50px; /* Tamanho da caixa */
-    height: 40px; /* Tamanho da caixa */
+
+    width: 45px; /* Caixa do input */
+
+    height: 38px;
+
     background-color: var(--bg-color);
+
     border: 1px solid var(--border-color);
+
     color: var(--text-color);
+
     font-family: var(--font-display);
-    font-size: 1.5em; /* Fonte interna */
-    text-align: center;
+
+    font-size: 1.4em; /* Fonte interna reduzida */
+
+    text-align: center; /* Centralizado */
+
     border-radius: 6px;
-    transition: all 0.3s ease;
+
+    -moz-appearance: textfield; /* Remove setas no Firefox */
+
 }
+
+.score-info-form input::-webkit-outer-spin-button,
+
+.score-info-form input::-webkit-inner-spin-button {
+
+  -webkit-appearance: none; /* Remove setas no Chrome, Safari, Edge */
+
+  margin: 0;
+
+}
+
 .score-info-form input:focus {
+
     border-color: var(--action-color);
+
     outline: none;
+
 }
+
+
 
 .inline-result-form button {
+
     background-color: var(--action-color);
+
     color: var(--bg-color);
-    width: 40px;
-    height: 40px;
-    font-size: 1.4em;
+
+    width: 38px;
+
+    height: 38px;
+
+    font-size: 1.3em;
+
     line-height: 1;
+
     padding: 0;
+
     border-radius: 6px;
+
     flex-shrink: 0;
+
 }
+
 .final-score .score-info { font-weight: 700; }
 
+
+
 @keyframes flash-green {
+
     0% { box-shadow: 0 0 10px var(--win-color); border-color: var(--win-color); }
+
     100% { box-shadow: 0 2px 5px rgba(0,0,0,0.3); border-color: var(--border-color); }
+
 }
+
 .score-saved { animation: flash-green 0.4s ease-out; }
 
+
+
 /* -------------------------------------------------------------------------- */
+
 /* CHAVEAMENTO E PÓDIO (AJUSTE 5) */
+
 /* -------------------------------------------------------------------------- */
+
 #playoffs h2, #podium-section h2 {
+
     font-size: 2.5em;
+
     text-align: center;
+
     color: var(--accent-color);
+
     margin-bottom: 30px;
+
 }
+
+
+
+/* Novo Layout do Bracket */
 
 .bracket {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    align-items: center;
-}
-.round {
+
     display: flex;
+
     flex-direction: column;
-    justify-content: space-around;
-    gap: 30px;
-    min-height: 260px;
-    position: relative;
+
+    gap: 40px; /* Espaço entre as linhas do bracket */
+
 }
+
+.bracket-row {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+
+    align-items: start;
+
+}
+
+.bracket-final-row {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+
+    margin-top: 20px;
+
+    padding: 0 15%; /* Centraliza mais a final e 3o lugar */
+
+}
+
+
+
+.round {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+}
+
 .round-title {
-    font-size: 1.6em; /* Fonte ajustada */
+
+    font-size: 1.5em; /* Fonte ajustada */
+
     text-align: center;
+
     color: var(--text-color-darker);
+
+    margin-bottom: 10px;
+
 }
-.match-wrapper { min-height: 65px; }
+
+.match-wrapper { min-height: 60px; }
+
+
 
 /* Fontes menores para os nomes nos playoffs */
+
 .bracket .team-name { font-size: 1.2em; }
-.bracket .score-info, .bracket .score-info-form { font-size: 1.4em; }
+
+.bracket .score-info, .bracket .score-info-form { font-size: 1.3em; }
+
+.bracket .score-info-form input { font-size: 1.2em; }
+
+
+
 
 
 /* Pódio Final */
+
 .podium-display {
+
     display: flex;
+
     justify-content: center;
+
     align-items: flex-end;
+
     gap: 5px;
+
     text-align: center;
+
     height: 350px;
+
 }
+
 .podium-place {
+
     flex: 1;
+
     max-width: 280px;
+
     display: flex;
+
     flex-direction: column;
+
     justify-content: flex-end;
+
     align-items: center;
+
     padding: 20px;
+
     border-top-left-radius: 10px;
+
     border-top-right-radius: 10px;
+
     box-shadow: inset 0 5px 15px rgba(0,0,0,0.4);
+
 }
+
 .podium-place h3 {
+
     font-size: 2em; /* Fonte ajustada */
+
     margin: 0 0 15px 0;
+
 }
+
 .podium-team {
+
     font-family: var(--font-display);
+
     font-size: 1.5em; /* Fonte ajustada */
+
     letter-spacing: 1px;
+
     display: flex;
+
     align-items: center;
+
     gap: 10px;
+
 }
+
 /* Cores do pódio */
+
 #podium-1st { height: 100%; background: linear-gradient(to top, #FFD700, #d1b000); color: #332a00; order: 2; }
+
 #podium-2nd { height: 75%; background: linear-gradient(to top, #C0C0C0, #a0a0a0); color: #2f2f2f; order: 1; }
+
 #podium-3rd { height: 50%; background: linear-gradient(to top, #CD7F32, #a06528); color: #331a00; order: 3; }
 
+
+
 /* -------------------------------------------------------------------------- */
+
 /* RESPONSIVIDADE E BADGES */
+
 /* -------------------------------------------------------------------------- */
-@media (max-width: 900px) {
-    #groups-section, .bracket, .group-games-display { flex-direction: column; grid-template-columns: 1fr; }
-}
-@media (max-width: 768px) {
-    header { flex-direction: column; gap: 15px; text-align: center; }
-    .podium-display { height: auto; flex-direction: column; align-items: center; }
-    #podium-1st, #podium-2nd, #podium-3rd { width: 90%; max-width: none; height: auto; order: 0; }
-    #podium-1st { order: -1; }
+
+@media (max-width: 1100px) {
+
+    .bracket-final-row { padding: 0 10%; }
+
 }
 
-.rank-badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 5px;
-    color: #0A1F33;
-    font-family: var(--font-display);
-    font-size: 1em;
-    letter-spacing: 1px;
+
+
+@media (max-width: 900px) {
+
+    #groups-section, .group-games-display { flex-direction: column; }
+
+    .bracket-row, .bracket-final-row { grid-template-columns: 1fr; }
+
+    .bracket-final-row { padding: 0; }
+
 }
+
+@media (max-width: 768px) {
+
+    header { flex-direction: column; gap: 15px; text-align: center; }
+
+    .podium-display { height: auto; flex-direction: column; align-items: center; }
+
+    #podium-1st, #podium-2nd, #podium-3rd { width: 90%; max-width: none; height: auto; order: 0; }
+
+    #podium-1st { order: -1; }
+
+}
+
+
+
+.rank-badge {
+
+    display: inline-block;
+
+    padding: 3px 8px;
+
+    border-radius: 5px;
+
+    color: #0A1F33;
+
+    font-family: var(--font-display);
+
+    font-size: 1em;
+
+    letter-spacing: 1px;
+
+}
+
 .rank-badge.gold { background-color: #FFD700; }
+
 .rank-badge.silver { background-color: #C0C0C0; }
+
 .rank-badge.bronze { background-color: #CD7F32; }
