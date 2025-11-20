@@ -7,11 +7,30 @@ document.addEventListener('DOMContentLoaded', () => {
         playoffMatches: { qf1: {}, qf2: {}, qf3: {}, qf4: {}, sf1: {}, sf2: {}, final: {}, 'third-place': {} },
         teamsLocked: false,
         playoffsGenerated: false,
+        // Novas propriedades para a votação
+        votacaoCraque: null, // Será inicializado após a criação dos times
+        userHasVoted: localStorage.getItem('userHasVoted_v1') === 'true',
+        votacaoEncerrada: localStorage.getItem('votacaoEncerrada_v1') === 'true',
     });
     let state = JSON.parse(localStorage.getItem('tournamentState_v3')) || getInitialState();
+    // Recupera o estado da votação separadamente para não resetar com o torneio
+    state.votacaoCraque = JSON.parse(localStorage.getItem('votacaoCraqueState_v1')) || null;
+    state.userHasVoted = localStorage.getItem('userHasVoted_v1') === 'true';
+    state.votacaoEncerrada = localStorage.getItem('votacaoEncerrada_v1') === 'true';
 
     // --- FUNÇÕES DE LÓGICA PRINCIPAL ---
-    const saveState = () => localStorage.setItem('tournamentState_v3', JSON.stringify(state));
+    const saveState = () => {
+        // Salva o estado do torneio
+        const tournamentState = { ...state, votacaoCraque: null, userHasVoted: undefined, votacaoEncerrada: undefined };
+        localStorage.setItem('tournamentState_v3', JSON.stringify(tournamentState));
+        
+        // Salva o estado da votação separadamente
+        if (state.votacaoCraque) {
+            localStorage.setItem('votacaoCraqueState_v1', JSON.stringify(state.votacaoCraque));
+        }
+        localStorage.setItem('userHasVoted_v1', state.userHasVoted);
+        localStorage.setItem('votacaoEncerrada_v1', state.votacaoEncerrada);
+    };
     const saveAndRender = () => { saveState(); render(); };
 
     const addTeam = (name, color, group) => {
@@ -83,6 +102,12 @@ document.addEventListener('DOMContentLoaded', () => {
             allGames = allGames.concat(groupGames);
         });
         state.groupStageGames = allGames;
+        
+        // Inicializa a votação aqui
+        if (!state.votacaoCraque) {
+            initializeVotacao();
+        }
+
         saveAndRender();
     };
     
@@ -263,6 +288,38 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     
         const sortTeams = (a, b) => b.v - a.v || (b.saldo - a.saldo) || (b.pm - a.pm) || (a.ps - b.ps) || 0;
+
+
+
+        // --- FUNÇÕES DE LÓGICA DA VOTAÇÃO ---
+        const initializeVotacao = () => {
+            const votacao = {};
+            state.teams.forEach(team => {
+                // Cada time tem 2 atletas
+                const atleta1Id = `${team.id}-1`;
+                const atleta2Id = `${team.id}-2`;
+                votacao[atleta1Id] = 0;
+                votacao[atleta2Id] = 0;
+            });
+            state.votacaoCraque = votacao;
+        };
+
+        const submitVote = (atletaId) => {
+            if (!atletaId || state.userHasVoted || state.votacaoEncerrada) return;
+
+            if (state.votacaoCraque.hasOwnProperty(atletaId)) {
+                state.votacaoCraque[atletaId]++;
+                state.userHasVoted = true;
+                saveAndRender();
+            }
+        };
+
+        const encerrarVotacao = () => {
+            if (confirm("Tem certeza que deseja encerrar a votação? Esta ação não pode ser desfeita.")) {
+                state.votacaoEncerrada = true;
+                saveAndRender();
+            }
+        };
     
     
     
@@ -279,6 +336,8 @@ document.addEventListener('DOMContentLoaded', () => {
             renderBracket();
     
             renderPodium();
+
+            renderVotacao();
     
             updateUIMode();
     
@@ -535,6 +594,139 @@ document.addEventListener('DOMContentLoaded', () => {
     
             }
     
+        };
+
+
+        const renderVotacao = () => {
+            if (!state.teamsLocked) return;
+
+            if (state.votacaoEncerrada) {
+                renderCraqueFinalCard();
+                renderResultadoCraque();
+                return;
+            }
+
+            renderVotacaoForm();
+            renderResultadoCraque();
+        };
+
+        const renderVotacaoForm = () => {
+            const form = document.getElementById('votacao-craque-form');
+            const mensagemContainer = document.getElementById('votacao-craque-mensagem');
+            form.innerHTML = '';
+            mensagemContainer.innerHTML = '';
+
+            if (state.userHasVoted || state.votacaoEncerrada) {
+                mensagemContainer.innerHTML = state.votacaoEncerrada ? 'Votação encerrada!' : 'Voto registrado! Obrigada por participar 💛';
+                // Hide the form and button if user has voted or voting is closed
+                const button = document.getElementById('enviar-voto-button');
+                if(button) button.classList.add('hidden');
+                return;
+            }
+
+            let content = '';
+            state.teams.forEach(team => {
+                for (let i = 1; i <= 2; i++) {
+                    const atletaId = `${team.id}-${i}`;
+                    const atletaNome = `${team.name} – Jogadora ${i}`;
+                    content += `
+                        <div class="votacao-atleta-item">
+                            <input type="radio" id="${atletaId}" name="craque" value="${atletaId}" required>
+                            <label for="${atletaId}" class="votacao-atleta-label">
+                                <span class="team-color-badge" style="background-color:${team.color};"></span>
+                                <span class="team-name">${atletaNome}</span>
+                            </label>
+                        </div>
+                    `;
+                }
+            });
+            form.innerHTML = content;
+
+            // Add submit button if it doesn't exist
+            if (!document.getElementById('enviar-voto-button')) {
+                const button = document.createElement('button');
+                button.id = 'enviar-voto-button';
+                button.type = 'submit';
+                button.textContent = 'Enviar Voto';
+                button.setAttribute('form', 'votacao-craque-form');
+                document.getElementById('votacao-craque-container').appendChild(button);
+            } else {
+                document.getElementById('enviar-voto-button').classList.remove('hidden');
+            }
+        };
+
+        const renderResultadoCraque = () => {
+            if (!state.votacaoCraque) return;
+            const container = document.getElementById('resultado-craque-container');
+            
+            const atletas = Object.keys(state.votacaoCraque).map(atletaId => {
+                const [teamId, jogadorNum] = atletaId.split('-');
+                const team = state.teams.find(t => t.id === teamId);
+                if (!team) return null; // Handle case where team might be deleted after voting started
+                return {
+                    id: atletaId,
+                    nome: `${team.name} – Jogadora ${jogadorNum}`,
+                    votos: state.votacaoCraque[atletaId],
+                    color: team.color,
+                };
+            }).filter(Boolean).sort((a, b) => b.votos - a.votos);
+
+            const totalVotos = atletas.reduce((sum, a) => sum + a.votos, 0);
+
+            container.innerHTML = atletas.map((atleta, index) => {
+                const progresso = totalVotos > 0 ? (atleta.votos / totalVotos) * 100 : 0;
+                return `
+                    <div class="resultado-atleta-item">
+                        <div class="resultado-rank">${index + 1}º</div>
+                        <div class="resultado-info">
+                            <div class="resultado-nome">
+                                <span class="team-color-badge" style="background-color:${atleta.color};"></span>
+                                ${atleta.nome}
+                            </div>
+                            <div class="resultado-progresso">
+                                <div class="progresso-barra" style="width: ${progresso}%; background-color:${atleta.color};"></div>
+                            </div>
+                        </div>
+                        <div class="resultado-votos">${atleta.votos}</div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        const renderCraqueFinalCard = () => {
+            if (!state.votacaoEncerrada || !state.votacaoCraque) return;
+
+            const atletas = Object.keys(state.votacaoCraque).map(atletaId => {
+                const [teamId, jogadorNum] = atletaId.split('-');
+                const team = state.teams.find(t => t.id === teamId);
+                if (!team) return null;
+                return {
+                    id: atletaId,
+                    votos: state.votacaoCraque[atletaId],
+                    team: team,
+                    jogadorNum: jogadorNum
+                };
+            }).filter(Boolean).sort((a, b) => b.votos - a.votos);
+
+            const winner = atletas[0];
+            if (!winner || winner.votos === 0) {
+                 document.getElementById('craque-final-card').innerHTML = `<div class="craque-final-content"><h2>👑 CRAQUE DA GALERA 👑</h2><p>Nenhum voto foi registrado.</p></div>`;
+                return;
+            };
+
+            const winnerName = `${winner.team.name} – Jogadora ${winner.jogadorNum}`;
+
+            const card = document.getElementById('craque-final-card');
+            card.innerHTML = `
+                <div class="craque-final-content">
+                    <h2>👑 CRAQUE DA GALERA 👑</h2>
+                    <div class="craque-final-nome">
+                        <span class="team-color-badge" style="background-color:${winner.team.color}; width: 30px; height: 30px;"></span>
+                        ${winnerName}
+                    </div>
+                    <div class="craque-final-votos">Com ${winner.votos} voto(s)!</div>
+                </div>
+            `;
         };
     
     
