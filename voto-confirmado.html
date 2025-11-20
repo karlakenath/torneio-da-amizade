@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voto Confirmado</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+        .confirmation-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            max-width: 500px;
+            width: 100%;
+        }
+        .confirmation-card .icon {
+            font-size: 5em;
+            color: var(--win-color);
+            margin-bottom: 20px;
+        }
+        .confirmation-card h1 {
+            font-size: 2.5em;
+            color: var(--action-color);
+            margin-bottom: 15px;
+        }
+        .confirmation-card p {
+            font-size: 1.5em;
+            color: var(--text-color);
+            margin-bottom: 30px;
+        }
+        .confirmation-card a {
+            background-color: var(--accent-color);
+            color: #000;
+            font-family: var(--font-display);
+            font-size: 1.2em;
+            padding: 10px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+        .confirmation-card a:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-card">
+        <div class="icon">✅</div>
+        <h1>Voto Registrado!</h1>
+        <p>Seu voto foi registrado! Obrigada por participar 💛</p>
+        <a href="index.html">Voltar ao Início do Torneio</a>
+    </div>
+</body>
+</html>

@@ -7,28 +7,22 @@ document.addEventListener('DOMContentLoaded', () => {
         playoffMatches: { qf1: {}, qf2: {}, qf3: {}, qf4: {}, sf1: {}, sf2: {}, final: {}, 'third-place': {} },
         teamsLocked: false,
         playoffsGenerated: false,
-        // Novas propriedades para a votação
-        votacaoCraque: null, // Será inicializado após a criação dos times
-        userHasVoted: localStorage.getItem('userHasVoted_v1') === 'true',
-        votacaoEncerrada: localStorage.getItem('votacaoEncerrada_v1') === 'true',
     });
     let state = JSON.parse(localStorage.getItem('tournamentState_v3')) || getInitialState();
     // Recupera o estado da votação separadamente para não resetar com o torneio
     state.votacaoCraque = JSON.parse(localStorage.getItem('votacaoCraqueState_v1')) || null;
-    state.userHasVoted = localStorage.getItem('userHasVoted_v1') === 'true';
     state.votacaoEncerrada = localStorage.getItem('votacaoEncerrada_v1') === 'true';
 
     // --- FUNÇÕES DE LÓGICA PRINCIPAL ---
     const saveState = () => {
         // Salva o estado do torneio
-        const tournamentState = { ...state, votacaoCraque: null, userHasVoted: undefined, votacaoEncerrada: undefined };
+        const tournamentState = { ...state, votacaoCraque: null, votacaoEncerrada: undefined };
         localStorage.setItem('tournamentState_v3', JSON.stringify(tournamentState));
         
         // Salva o estado da votação separadamente
         if (state.votacaoCraque) {
             localStorage.setItem('votacaoCraqueState_v1', JSON.stringify(state.votacaoCraque));
         }
-        localStorage.setItem('userHasVoted_v1', state.userHasVoted);
         localStorage.setItem('votacaoEncerrada_v1', state.votacaoEncerrada);
     };
     const saveAndRender = () => { saveState(); render(); };
@@ -287,61 +281,89 @@ document.addEventListener('DOMContentLoaded', () => {
     
         };
     
-        const sortTeams = (a, b) => b.v - a.v || (b.saldo - a.saldo) || (b.pm - a.pm) || (a.ps - b.ps) || 0;
-
-
-
-        // --- FUNÇÕES DE LÓGICA DA VOTAÇÃO ---
-        const initializeVotacao = () => {
-            const votacao = {};
-            state.teams.forEach(team => {
-                // Cada time tem 2 atletas
-                const atleta1Id = `${team.id}-1`;
-                const atleta2Id = `${team.id}-2`;
-                votacao[atleta1Id] = 0;
-                votacao[atleta2Id] = 0;
-            });
-            state.votacaoCraque = votacao;
-        };
-
-        const submitVote = (atletaId) => {
-            if (!atletaId || state.userHasVoted || state.votacaoEncerrada) return;
-
-            if (state.votacaoCraque.hasOwnProperty(atletaId)) {
-                state.votacaoCraque[atletaId]++;
-                state.userHasVoted = true;
-                saveAndRender();
-            }
-        };
-
-        const encerrarVotacao = () => {
-            if (confirm("Tem certeza que deseja encerrar a votação? Esta ação não pode ser desfeita.")) {
-                state.votacaoEncerrada = true;
-                saveAndRender();
-            }
-        };
+                const sortTeams = (a, b) => b.v - a.v || (b.saldo - a.saldo) || (b.pm - a.pm) || (a.ps - b.ps) || 0;
     
+        
     
+        
     
-        // --- FUNÇÕES DE RENDERIZAÇÃO ---
+                // --- FUNÇÕES DE LÓGICA DA VOTAÇÃO ---
     
-        const render = () => {
+                const initializeVotacao = () => {
     
-            renderTeamManagement();
+                    const votacao = {};
     
-            renderTables();
+                    state.teams.forEach(team => {
     
-            renderGroupStageGames();
+                        const playerNames = team.name.split('/').map(name => name.trim());
     
-            renderBracket();
+                        playerNames.forEach((playerName, index) => {
     
-            renderPodium();
-
-            renderVotacao();
+                            const atletaId = `${team.id}-${index + 1}`; // Use index + 1 for player number
     
-            updateUIMode();
+                            votacao[atletaId] = 0;
     
-        };
+                        });
+    
+                    });
+    
+                    state.votacaoCraque = votacao;
+    
+                };
+    
+        
+    
+                const encerrarVotacao = () => {
+    
+                    if (confirm("Tem certeza que deseja encerrar a votação? Esta ação não pode ser desfeita.")) {
+    
+                        state.votacaoEncerrada = true;
+    
+                        saveAndRender();
+    
+                    }
+    
+                };
+    
+            
+    
+                // --- FUNÇÕES DE RENDERIZAÇÃO ---
+    
+            
+    
+                const render = () => {
+    
+            
+    
+                    renderTeamManagement();
+    
+            
+    
+                    renderTables();
+    
+            
+    
+                    renderGroupStageGames();
+    
+            
+    
+                    renderBracket();
+    
+            
+    
+                    renderPodium();
+    
+            
+    
+                    updateUIMode();
+    
+                    renderResultadoCraque(); // Always render results on main page
+    
+                    renderCraqueFinalCard(); // Always render final card on main page if voting ended
+    
+            
+    
+                };
     
     
     
@@ -596,65 +618,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
         };
 
-
-        const renderVotacao = () => {
-            if (!state.teamsLocked) return;
-
-            if (state.votacaoEncerrada) {
-                renderCraqueFinalCard();
-                renderResultadoCraque();
-                return;
-            }
-
-            renderVotacaoForm();
-            renderResultadoCraque();
-        };
-
-        const renderVotacaoForm = () => {
-            const form = document.getElementById('votacao-craque-form');
-            const mensagemContainer = document.getElementById('votacao-craque-mensagem');
-            form.innerHTML = '';
-            mensagemContainer.innerHTML = '';
-
-            if (state.userHasVoted || state.votacaoEncerrada) {
-                mensagemContainer.innerHTML = state.votacaoEncerrada ? 'Votação encerrada!' : 'Voto registrado! Obrigada por participar 💛';
-                // Hide the form and button if user has voted or voting is closed
-                const button = document.getElementById('enviar-voto-button');
-                if(button) button.classList.add('hidden');
-                return;
-            }
-
-            let content = '';
-            state.teams.forEach(team => {
-                for (let i = 1; i <= 2; i++) {
-                    const atletaId = `${team.id}-${i}`;
-                    const atletaNome = `${team.name} – Jogadora ${i}`;
-                    content += `
-                        <div class="votacao-atleta-item">
-                            <input type="radio" id="${atletaId}" name="craque" value="${atletaId}" required>
-                            <label for="${atletaId}" class="votacao-atleta-label">
-                                <span class="team-color-badge" style="background-color:${team.color};"></span>
-                                <span class="team-name">${atletaNome}</span>
-                            </label>
-                        </div>
-                    `;
-                }
-            });
-            form.innerHTML = content;
-
-            // Add submit button if it doesn't exist
-            if (!document.getElementById('enviar-voto-button')) {
-                const button = document.createElement('button');
-                button.id = 'enviar-voto-button';
-                button.type = 'submit';
-                button.textContent = 'Enviar Voto';
-                button.setAttribute('form', 'votacao-craque-form');
-                document.getElementById('votacao-craque-container').appendChild(button);
-            } else {
-                document.getElementById('enviar-voto-button').classList.remove('hidden');
-            }
-        };
-
         const renderResultadoCraque = () => {
             if (!state.votacaoCraque) return;
             const container = document.getElementById('resultado-craque-container');
@@ -741,11 +704,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
             document.getElementById('playoffs').classList.toggle('hidden', !state.playoffsGenerated);
 
-            // Controle da visibilidade da votação
-            const votacaoAtiva = state.teamsLocked;
-            document.getElementById('votacao-craque-fieldset').classList.toggle('hidden', !votacaoAtiva || state.votacaoEncerrada);
-            document.getElementById('resultado-craque-section').classList.toggle('hidden', !votacaoAtiva);
-            document.getElementById('craque-final-card').classList.toggle('hidden', !state.votacaoEncerrada);
+            // Controle da visibilidade da seção de resultados da votação
+            document.getElementById('resultado-craque-section').classList.toggle('hidden', !state.teamsLocked);
             
             // Botão de encerrar votação
             const encerrarBtn = document.getElementById('encerrar-votacao-button');
@@ -779,15 +739,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 addMatchResult(gameId, s1, s2, cardElement);
     
-            } else if (e.target.id === 'votacao-craque-form') {
+            } else if (e.target.classList.contains('add-team-form')) {
+    
                 e.preventDefault();
-                const formData = new FormData(e.target);
-                const atletaId = formData.get('craque');
-                if (atletaId) {
-                    submitVote(atletaId);
-                } else {
-                    alert("Por favor, selecione uma atleta para votar.");
-                }
+    
+                addTeam(e.target.elements[0].value, e.target.elements[1].value, e.target.dataset.group);
+    
+                e.target.reset();
+    
             }
     
         });
@@ -816,13 +775,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm("Tem certeza? TODO o progresso será perdido.")) { 
                 localStorage.removeItem('tournamentState_v3'); 
                 localStorage.removeItem('votacaoCraqueState_v1');
-                localStorage.removeItem('userHasVoted_v1');
                 localStorage.removeItem('votacaoEncerrada_v1');
                 state = getInitialState(); 
-                // Manually clear the UI for votacao
-                document.getElementById('votacao-craque-fieldset').classList.add('hidden');
-                document.getElementById('resultado-craque-section').classList.add('hidden');
-                document.getElementById('craque-final-card').classList.add('hidden');
                 saveAndRender(); 
             } 
         };
