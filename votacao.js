@@ -31,14 +31,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let playersForVoting = [];
 
     teams.forEach(team => {
-        const baseTeamName = team.name.split('/')[0].trim(); // Extract base team name
         const playerNames = team.name.split('/').map(name => name.trim());
         playerNames.forEach((playerName, index) => {
             const atletaId = `${team.id}-${index + 1}`;
             playersForVoting.push({
                 id: atletaId,
                 teamId: team.id,
-                baseTeamName: baseTeamName, // Store the base team name
+                teamName: team.name,
                 playerName: playerName,
                 color: team.color
             });
@@ -56,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <input type="radio" id="${player.id}" name="craque" value="${player.id}" required>
                 <label for="${player.id}" class="votacao-atleta-label">
                     <span class="team-color-badge" style="background-color:${player.color};"></span>
-                    <span class="team-name">${player.baseTeamName} – ${player.playerName}</span>
+                    <span class="team-name">${player.teamName.split('/')[0].trim()} – ${player.playerName}</span>
                 </label>
             </div>
         `).join('');
