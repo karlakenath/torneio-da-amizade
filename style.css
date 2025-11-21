@@ -821,7 +821,11 @@ td .team-color-badge {
 
 
 
+/* -------------------------------------------------------------------------- */
 
+
+
+/* CRAQUE DA GALERA - VOTAÇÃO E RESULTADOS */
 
 
 
@@ -829,15 +833,7 @@ td .team-color-badge {
 
 
 
-/* CRAQUE DA GALERA - RESULTADOS */
-
-
-
-/* -------------------------------------------------------------------------- */
-
-
-
-#resultado-craque-section h2, #craque-final-card h2 {
+#votacao-craque-fieldset h2, #resultado-craque-section h2, #craque-final-card h2 {
 
 
 
@@ -854,6 +850,370 @@ td .team-color-badge {
 
 
     text-shadow: 0 0 8px var(--action-color);
+
+
+
+}
+
+
+
+
+
+
+
+#votacao-craque-form {
+
+
+
+    display: grid;
+
+
+
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+
+
+    gap: 20px;
+
+
+
+    margin-bottom: 25px;
+
+
+
+}
+
+
+
+
+
+
+
+.votacao-atleta-item {
+
+
+
+    display: flex;
+
+
+
+    align-items: center;
+
+
+
+    background: var(--card-bg-darker);
+
+
+
+    padding: 12px;
+
+
+
+    border-radius: 8px;
+
+
+
+    border: 1px solid var(--border-color);
+
+
+
+    transition: all 0.3s ease;
+
+
+
+}
+
+
+
+.votacao-atleta-item:hover {
+
+
+
+    border-color: var(--action-color);
+
+
+
+}
+
+
+
+
+
+
+
+.votacao-atleta-item input[type="radio"] {
+
+
+
+    -webkit-appearance: none;
+
+
+
+    appearance: none;
+
+
+
+    background-color: var(--bg-color);
+
+
+
+    margin: 0;
+
+
+
+    font: inherit;
+
+
+
+    color: currentColor;
+
+
+
+    width: 1.5em;
+
+
+
+    height: 1.5em;
+
+
+
+    border: 2px solid var(--border-color);
+
+
+
+    border-radius: 50%;
+
+
+
+    transform: translateY(-0.075em);
+
+
+
+    display: grid;
+
+
+
+    place-content: center;
+
+
+
+    cursor: pointer;
+
+
+
+    margin-right: 15px;
+
+
+
+}
+
+
+
+.votacao-atleta-item input[type="radio"]::before {
+
+
+
+    content: "";
+
+
+
+    width: 0.8em;
+
+
+
+    height: 0.8em;
+
+
+
+    border-radius: 50%;
+
+
+
+    transform: scale(0);
+
+
+
+    transition: 120ms transform ease-in-out;
+
+
+
+    box-shadow: inset 1em 1em var(--action-color);
+
+
+
+}
+
+
+
+.votacao-atleta-item input[type="radio"]:checked::before {
+
+
+
+    transform: scale(1);
+
+
+
+}
+
+
+
+
+
+
+
+.votacao-atleta-label {
+
+
+
+    display: flex;
+
+
+
+    align-items: center;
+
+
+
+    gap: 10px;
+
+
+
+    font-size: 1.1em;
+
+
+
+    cursor: pointer;
+
+
+
+    width: 100%;
+
+
+
+}
+
+
+
+.votacao-atleta-label .team-name {
+
+
+
+    font-family: var(--font-main);
+
+
+
+    font-size: 1.1em;
+
+
+
+}
+
+
+
+
+
+
+
+#votacao-craque-container {
+
+
+
+    display: flex;
+
+
+
+    flex-direction: column;
+
+
+
+    align-items: center;
+
+
+
+}
+
+
+
+
+
+
+
+#votacao-craque-container button {
+
+
+
+    background-color: var(--action-color);
+
+
+
+    color: #000;
+
+
+
+    font-size: 1.5em;
+
+
+
+    padding: 12px 40px;
+
+
+
+    box-shadow: 0 0 12px var(--action-color);
+
+
+
+}
+
+
+
+#votacao-craque-container button:disabled {
+
+
+
+    background-color: var(--text-color-darker);
+
+
+
+    color: var(--card-bg);
+
+
+
+    cursor: not-allowed;
+
+
+
+    box-shadow: none;
+
+
+
+}
+
+
+
+
+
+
+
+#votacao-craque-mensagem {
+
+
+
+    margin-top: 20px;
+
+
+
+    font-size: 1.3em;
+
+
+
+    color: var(--action-color);
+
+
+
+    font-weight: bold;
+
+
+
+    text-align: center;
 
 
 
