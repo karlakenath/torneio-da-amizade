@@ -740,19 +740,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('group-games-section').classList.toggle('hidden', !state.teamsLocked);
     
             document.getElementById('playoffs').classList.toggle('hidden', !state.playoffsGenerated);
-
-            // Controle da visibilidade da votação
-            const votacaoAtiva = state.teamsLocked;
-            document.getElementById('votacao-craque-fieldset').classList.toggle('hidden', !votacaoAtiva || state.votacaoEncerrada);
-            document.getElementById('resultado-craque-section').classList.toggle('hidden', !votacaoAtiva);
-            document.getElementById('craque-final-card').classList.toggle('hidden', !state.votacaoEncerrada);
-            
-            // Botão de encerrar votação
-            const encerrarBtn = document.getElementById('encerrar-votacao-button');
-            if(encerrarBtn) {
-                encerrarBtn.disabled = state.votacaoEncerrada;
-                encerrarBtn.classList.toggle('hidden', state.votacaoEncerrada);
-            }
+    
         };
     
     
@@ -779,15 +767,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 addMatchResult(gameId, s1, s2, cardElement);
     
-            } else if (e.target.id === 'votacao-craque-form') {
+            } else if (e.target.classList.contains('add-team-form')) {
+    
                 e.preventDefault();
-                const formData = new FormData(e.target);
-                const atletaId = formData.get('craque');
-                if (atletaId) {
-                    submitVote(atletaId);
-                } else {
-                    alert("Por favor, selecione uma atleta para votar.");
-                }
+    
+                addTeam(e.target.elements[0].value, e.target.elements[1].value, e.target.dataset.group);
+    
+                e.target.reset();
+    
             }
     
         });
@@ -801,10 +788,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 deleteTeam(e.target.dataset.teamId);
     
             }
-
-            if (e.target.id === 'encerrar-votacao-button') {
-                encerrarVotacao();
-            }
     
         });
     
@@ -812,20 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         document.getElementById('generate-games-button').onclick = generateGroupStageGames;
     
-        document.getElementById('reset-button').onclick = () => { 
-            if (confirm("Tem certeza? TODO o progresso será perdido.")) { 
-                localStorage.removeItem('tournamentState_v3'); 
-                localStorage.removeItem('votacaoCraqueState_v1');
-                localStorage.removeItem('userHasVoted_v1');
-                localStorage.removeItem('votacaoEncerrada_v1');
-                state = getInitialState(); 
-                // Manually clear the UI for votacao
-                document.getElementById('votacao-craque-fieldset').classList.add('hidden');
-                document.getElementById('resultado-craque-section').classList.add('hidden');
-                document.getElementById('craque-final-card').classList.add('hidden');
-                saveAndRender(); 
-            } 
-        };
+        document.getElementById('reset-button').onclick = () => { if (confirm("Tem certeza? TODO o progresso será perdido.")) { localStorage.removeItem('tournamentState_v3'); state = getInitialState(); saveAndRender(); } };
     
     
     
